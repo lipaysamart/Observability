@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mssql-exporter
+  namespace: monitoring
+spec:
+  selector:
+    matchLabels:
+      app: mssql-exporter
+  template:
+    metadata:
+      labels:
+        app: mssql-exporter
+    spec:
+      containers:
+      - ports:
+        - containerPort: 4000
+          name: p001-dotnet
+        image: awaragi/prometheus-mssql-exporter:v1.3.0
+        name: mssql-exporter
+        env:
+        - name: SERVER
+          value: xxxxxxxx.sqlserver.rds.aliyuncs.com
+        - name: USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: mssql-secret
+              key: username
+        - name: PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mssql-secret
+              key: password
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mssql-secret
+  namespace: monitoring
+type: Opaque
+stringData:
+  username: export
+  password: xxxxxxxxx #对应 MSSQL 密码
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: mssql-service
+  namespace: monitoring
+  annotations:
+    prometheus.io/scrape: "true"
+  labels:
+    app: mssql-exporter
+spec:
+  selector:
+    app: mssql-exporter
+  ports:
+  - port: 4000
+    name: app
+    targetPort: 4000
+  type: ClusterIP

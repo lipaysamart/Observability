@@ -1,0 +1,100 @@
+apiVersion: monitoring.coreos.com/v1
+kind: Prometheus
+metadata:
+  labels:
+    app.kubernetes.io/component: prometheus
+    app.kubernetes.io/instance: k8s
+    app.kubernetes.io/name: prometheus
+    app.kubernetes.io/part-of: kube-prometheus
+    app.kubernetes.io/version: 2.41.0
+  name: k8s
+  namespace: monitoring
+spec:
+  alerting:
+    alertmanagers:
+    - apiVersion: v2
+      name: alertmanager-main
+      namespace: monitoring
+      port: web
+  enableFeatures: []
+  # 扩展的URL，防止告警生成时的URL是容器ID
+  externalUrl: https://vmsingle.k8s.local
+  # 添加一个额外标签, 方便多集群监控时当作唯一标识
+  externalLabels: 
+    cluster: k8s-local
+  # 保存时间为 6h
+  retention: 6h
+  # 全局抓取间隔时间
+  scrapeInterval: 30s
+  # 全局抓取超时时间
+  scrapeTimeout: 10s
+  # 全局告警规则评估时间
+  evaluationInterval: 3m
+  # 启用 AdminAPI
+  enableAdminAPI: true
+  # 持久化存储。(由于只是 6h的数据，我们不需要分配太多空间)
+  storage:
+    volumeClaimTemplates:
+    - metadata:
+        name: prom
+      spec:
+        accessModes: 
+          - ReadWriteOnce
+        storageClassName: default
+        resources:
+          requests:
+            storage: 20Gi
+  # 远程写入 vmsingle
+  remoteWrite:
+    - url: https://vmsingle.k8s.local/api/v1/write
+      queueConfig:
+        maxSamplesPerSend: 10000
+        capacity: 20000
+        maxShards: 30
+      remoteTimeout: 1m
+  # 添加外部的 Alertmanager地址
+  additionalAlertManagerConfigs:
+    key: alert-config
+    name: alert-center-external
+  # 添加额外抓取配置
+  additionalScrapeConfigs:
+    name: additional-configs
+    key: prometheus-additional.yaml
+  image: quay.io/prometheus/prometheus:v2.41.0
+  nodeSelector:
+    kubernetes.io/os: linux
+  podMetadata:
+    labels:
+      app.kubernetes.io/component: prometheus
+      app.kubernetes.io/instance: k8s
+      app.kubernetes.io/name: prometheus
+      app.kubernetes.io/part-of: kube-prometheus
+      app.kubernetes.io/version: 2.41.0
+  # 标记用于在配置 Pod 资源时指定适用的 Namespace 
+  podMonitorNamespaceSelector: {}
+  # 标记用于在配置指定适用的 Pod 资源
+  podMonitorSelector: {}
+  # 标记用于在配置 Probe 资源时指定适用的 Namespace 
+  probeNamespaceSelector: {}
+  # 标记用于在配置指定适用的 Probe 资源
+  probeSelector: {}
+  replicas: 1
+  resources:
+    requests:
+      memory: 1.5Gi
+      cpu: 200m
+    limits:
+      memory: 3Gi
+      cpu: 400m
+  # 标记用于在配置告警规则时指定适用的 Namespace 
+  ruleNamespaceSelector: {}
+  # 标记用于在配置指定适用的 rule 资源
+  ruleSelector: {}
+  securityContext:
+    fsGroup: 2000
+    runAsNonRoot: true
+    runAsUser: 1000
+  serviceAccountName: prometheus-k8s
+  serviceMonitorNamespaceSelector: {}
+  serviceMonitorSelector: {}
+  version: 2.41.0

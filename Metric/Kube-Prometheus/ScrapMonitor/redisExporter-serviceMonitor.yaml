@@ -1,0 +1,10 @@
+kind: ServiceMonitor
+metadata:
+  name: redis
+  namespace: monitoring
+spec:
+  endpoints:
+  - port: prom
+  selector:
+    matchLabels:
+      app: redis

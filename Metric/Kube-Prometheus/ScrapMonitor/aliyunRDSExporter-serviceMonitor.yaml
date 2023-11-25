@@ -1,0 +1,16 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+    name: rds-metrics
+    namespace: monitoring
+spec:
+  endpoints:
+  - interval: 60s
+    port: http
+  namespaceSelector:
+    matchNames:
+    - monitoring
+  selector:
+    matchLabels:
+      app: rds-exporter

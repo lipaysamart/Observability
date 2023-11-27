@@ -20,17 +20,27 @@
 ### 目录结构
 
 ```
-├─Alertmanager  # 告警平台
-├─ExternalRules     # 额外的告警规则
-├─Grafana       # 数据展示
-├─PrometheusAlert   # 告警通知渠道，格式化模板
-│  └─wx-tpl     # 告警模板简单示例
-├─Release-0.12      # Kube-Prometheus
-│  └─manifests
-│      └─setup
-└─ScrapMonitor      # 监控抓取配置
-    └─exporter      # Export 配置
-```
+├─Log
+│  ├─Export   # 日志类的 Export
+│  │  └─k8sEvenExport
+│  ├─Loki   # 收集日志
+│  ├─Minio    # s3 持久化存储日志
+│  ├─Promtail   # 日志采集
+│  ├─Redis  # 缓存数据库
+│  └─Rules  # 告警规则
+└─Metric
+    ├─Alertmanager    # 告警平台
+    ├─ExternalRules   # 扩展的告警规则
+    ├─Grafana   # 数据展示
+    ├─Kube-Prometheus   # Kube-Prometheus-Operator 项目版本
+    │  └─Release-0.12
+    │      └─manifests
+    │          └─setup
+    ├─PrometheusAlert   # 告警通知渠道，格式化模板
+    │  └─wx-tpl   # 告警模板简单示例
+    └─ScrapMonitor    # 监控抓取配置
+        └─exporter    # Export 配置
+```  
 
 ### 项目部署
 

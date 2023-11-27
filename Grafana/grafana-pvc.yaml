@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: promealert-pvc
+  name: grafana-pvc
   namespace: monitoring
 spec:
   accessModes:
     - ReadWriteOnce
-  storageClassName: alicloud-disk-efficiency
+  storageClassName: nfs
   resources:
     requests:
-      storage: 20Gi
+      storage: 5Gi

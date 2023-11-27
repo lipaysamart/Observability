@@ -2,45 +2,47 @@
 
 >Build Your Kubernetes Monitoring System
 
-![Prometheus](https://img.shields.io/badge/Prometheus-E6522C?style=for-the-badge&logo=Prometheus&logoColor=white) ![Grafana](https://img.shields.io/badge/grafana-%23F46800.svg?style=for-the-badge&logo=grafana&logoColor=white) 	![Kubernetes](https://img.shields.io/badge/kubernetes-%23326ce5.svg?style=for-the-badge&logo=kubernetes&logoColor=white) ![Prometheusalert](https://img.shields.io/badge/Prometheusalert-E6522C?style=for-the-badge&logoColor=white) ![VictoriaMetrics](https://img.shields.io/badge/VictoriaMetrics-%23512BD4?style=for-the-badge&logo=VictoriaMetrics&logoColor=white)
+![Prometheus](https://img.shields.io/badge/Prometheus-E6522C?style=for-the-badge&logo=Prometheus&logoColor=white) ![Grafana](https://img.shields.io/badge/grafana-%23F46800.svg?style=for-the-badge&logo=grafana&logoColor=white) 	![Kubernetes](https://img.shields.io/badge/kubernetes-%23326ce5.svg?style=for-the-badge&logo=kubernetes&logoColor=white) ![Prometheusalert](https://img.shields.io/badge/Prometheusalert-E6522C?style=for-the-badge&logoColor=white)
 
 ### K8S版本兼容
 
-| kube-prometheus stack                                                                      | 1.20 | 1.21 | 1.22 | 1.23 | 1.24 | 1.25 | 1.26 | 1.27 | 1.28 |
-| ------------------------------------------------------------------------------------------ | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- |
-| [`release-0.7`](https://github.com/prometheus-operator/kube-prometheus/tree/release-0.7)   | ✔    | ✗    | ✗    | ✗    | ✗    | ✗    | ✗    | ✗    | ✗    |
-| [`release-0.8`](https://github.com/prometheus-operator/kube-prometheus/tree/release-0.8)   | ✔    | ✔    | ✗    | ✗    | ✗    | ✗    | ✗    | ✗    | ✗    |
-| [`release-0.9`](https://github.com/prometheus-operator/kube-prometheus/tree/release-0.9)   | ✗    | ✔    | ✔    | ✗    | ✗    | ✗    | ✗    | ✗    | ✗    |
-| [`release-0.10`](https://github.com/prometheus-operator/kube-prometheus/tree/release-0.10) | ✗    | ✗    | ✔    | ✔    | ✗    | ✗    | ✗    | ✗    | ✗    |
-| [`release-0.11`](https://github.com/prometheus-operator/kube-prometheus/tree/release-0.11) | ✗    | ✗    | ✗    | ✔    | ✔    | ✗    | ✗    | ✗    | ✗    |
-| [`release-0.12`](https://github.com/prometheus-operator/kube-prometheus/tree/release-0.12) | ✗    | ✗    | ✗    | ✗    | ✔    | ✔    | ✗    | ✗    | ✗    |
-| [`release-0.13`](https://github.com/prometheus-operator/kube-prometheus/tree/release-0.13) | ✗    | ✗    | ✗    | ✗    | ✗    | ✗    | ✔    | ✔    | ✔    |
-| [`main`](https://github.com/prometheus-operator/kube-prometheus/tree/main)                 | ✗    | ✗    | ✗    | ✗    | ✗    | ✗    | ✗    | ✔    | ✔    |
+| kube-prometheus stack                                                                      | Kubernetes 1.21 | Kubernetes 1.22 | Kubernetes 1.23 | Kubernetes 1.24 | Kubernetes 1.25 |
+| ------------------------------------------------------------------------------------------ | --------------- | --------------- | --------------- | --------------- | --------------- |
+| [`release-0.9`](https://github.com/prometheus-operator/kube-prometheus/tree/release-0.9)   | ✔               | ✔               | ✗               | ✗               | ✗               |
+| [`release-0.10`](https://github.com/prometheus-operator/kube-prometheus/tree/release-0.10) | ✗               | ✔               | ✔               | ✗               | ✗               |
+| [`release-0.11`](https://github.com/prometheus-operator/kube-prometheus/tree/release-0.11) | ✗               | ✗               | ✔               | ✔               | ✗               |
+| [`release-0.12`](https://github.com/prometheus-operator/kube-prometheus/tree/release-0.12) | ✗               | ✗               | ✗               | ✔               | ✔               |
+| [`main`](https://github.com/prometheus-operator/kube-prometheus/tree/main)                 | ✗               | ✗               | ✗               | ✗               | ✔               |
 
 ### 目录结构
 
 ```
-├─Log
-│  ├─Export   # 日志类的 Export
-│  │  └─k8sEvenExport
-│  ├─Loki   # 日志记录引擎，负责存储日志和处理查询
-│  ├─Minio    # s3 持久化存储日志
-│  ├─Promtail   # 代理，负责收集日志并将其发送给 loki
-│  ├─Redis  # 缓存数据库
-│  └─Rules  # 告警规则
-└─Metric
-    ├─Alertmanager    # 告警平台
-    ├─ExternalRules   # 扩展的告警规则
-    ├─Grafana   # 数据展示
-    ├─Kube-Prometheus   # Kube-Prometheus-Operator 项目版本
-    │  └─Release-0.12
-    │      └─manifests
-    │          └─setup
-    ├─PrometheusAlert   # 告警通知渠道，格式化模板
-    │  └─wx-tpl   # 告警模板简单示例
-    └─ScrapMonitor    # 监控抓取配置
-        └─exporter    # Export 配置
+├─Alertmanager    # 告警平台
+├─ExternalRules   # 扩展的告警规则
+├─Grafana   # 数据展示
+├─PrometheusAlert   # 告警通知，格式化模板
+│  └─wx-tpl   # 告警模板简单示例
+├─Release-0.12    # Kube-Prometheus-Operator 项目版本
+│  └─manifests
+│      └─setup
+└─ScrapMonitor     # 监控抓取配置
+    └─exporter    # Export 配置  
 ```  
+
+### 项目配置
+
+>与原生的 **Kube-Prometheus** 不同。在原生项目的基础上增加了一些配置，和完善避免部署原生时踩过的一些坑。其中一些默认值需要进行修改，例如 `storageClass`, `ingress` 等资源。
+>>每个文件内都有清晰的注解说明，请仔细查看。
+
+|          Explain          |                     Path                      |
+| :-----------------------: | :-------------------------------------------: |
+|      Prometheus 配置      |     manifests/prometheus-prometheus.yaml      |
+|       Blackbox 配置       | manifests/blackboxExporter-configuration.yaml |
+|       自动发现配置        |     manifests/prometheus-additional.yaml      |
+|         RBAC配置          |     manifests/prometheus-clusterRole.yaml     |
+| Alertmanager 告警路由配置 |     Alertmanager/alertmanager-secret.yaml     |
+|       Grafana 配置        |          Grafana/grafana-config.yaml          |
+|   Prometheusalert 配置    |  Prometheusalert/prometheusAlert-config.yaml  |
 
 ### 项目部署
 
@@ -51,18 +53,6 @@ $ kubectl create -f manifests/setup
 $ kubectl create -f Grafana/ -f PrometheusAlert/ -f Alertmanager/
 $ kubectl create -f manifests/
 ```
-
-### 项目配置
-
->与原生的 **Kube-Prometheus** 不同。在原生项目的基础上增加了一些配置，和完善避免部署原生时踩过的一些坑。其中一些默认值需要进行修改，例如 `storageClass`, `ingress` 等资源。
->>每个文件内都有清晰的注解说明，请仔细查看。
-
-|      Explain       |                     Path                      |
-| :----------------: | :-------------------------------------------: |
-|  Prometheus 配置   |     manifests/prometheus-prometheus.yaml      |
-|   Blackbox 配置    | manifests/blackboxExporter-configuration.yaml |
-| 自动发现配置(必选) |     manifests/prometheus-additional.yaml      |
-|   RBAC配置(必选)   |     manifests/prometheus-clusterRole.yaml     |
 
 ### TIPS
 
@@ -97,6 +87,7 @@ metadata:
   name: k8s
   namespace: monitoring
 spec:
+  # 添加这部分内容
   additionalAlertManagerConfigs:
     key: alert-config
     name: alert-center-external

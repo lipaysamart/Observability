@@ -1,6 +1,8 @@
 ## Observability
 
-Build Your Kubernetes Monitoring System
+>Build Your Kubernetes Monitoring System
+
+![Prometheus](https://img.shields.io/badge/Prometheus-E6522C?style=for-the-badge&logo=Prometheus&logoColor=white) ![Grafana](https://img.shields.io/badge/grafana-%23F46800.svg?style=for-the-badge&logo=grafana&logoColor=white) 	![Kubernetes](https://img.shields.io/badge/kubernetes-%23326ce5.svg?style=for-the-badge&logo=kubernetes&logoColor=white) ![Prometheusalert](https://img.shields.io/badge/Prometheusalert-E6522C?style=for-the-badge&logoColor=white) ![VictoriaMetrics](https://img.shields.io/badge/VictoriaMetrics-%23512BD4?style=for-the-badge&logo=VictoriaMetrics&logoColor=white)
 
 ### K8S版本兼容
 
@@ -32,13 +34,14 @@ Build Your Kubernetes Monitoring System
 
 ### 项目部署
 
-> 
+>
 
 ```
 $ kubectl create -f manifests/setup
 $ kubectl create -f Grafana/ -f PrometheusAlert/ -f Alertmanager/
 $ kubectl create -f manifests/
 ```
+
 ### 项目配置
 
 >与原生的 **Kube-Prometheus** 不同。在原生项目的基础上增加了一些配置，和完善避免部署原生时踩过的一些坑。其中一些默认值需要进行修改，例如 `storageClass`, `ingress` 等资源。

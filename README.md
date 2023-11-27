@@ -105,27 +105,27 @@ spec:
 
 #### 配置自定义监控
 
->在`Pormetheus-Operator`中给我们提供了`ServiceMonitor`对象,我们可以通过`ServiceMonitor`来关联`Metrics`数据接口的`Service`对象。
->>常见的监控对象在`PROMETHEUS/scrape`
+>在 `Pormetheus-Operator` 中给我们提供了 `ServiceMonitor` 对象,我们可以通过 `ServiceMonitor` 来关联 `Metrics` 数据接口的 `Service` 对象。
+>>常见的监控对象在 `PROMETHEUS/scrape`
 
 #### 配置自动发现
 
->通过添加注解`prometheus.io/scrape=true`来进行`service/pod`发现并进行自动监控,此前我们已经在Prometheus中进行配置`Prometheus.spec.additionalScrapeConfigs`。
+>通过添加注解 `prometheus.io/scrape=true`来进行 `service/pod` 发现并进行自动监控,此前我们已经在Prometheus中进行配置 `Prometheus.spec.additionalScrapeConfigs`。
 
 #### 配置告警规则
 
 >想要自定义一个报警规则，只需要创建一个能够被 `prometheus` 对象匹配的 `PrometheusRule` 对象即可。
->>常见的告警规则在`PROMETHEUS/rules`。
+>>扩展的告警规则在 `ExternalRules/`。
 
 #### 监控 **kube_proxy** 组件
 
 ```
 # kube-proxy默认监听的地址是127.0.0.1:10249，如果你是1.26的版本则默认不开启。
 # 修改监听的端口，按如下方法:
-$ k edit cm kube-proxy -nkube-system
+k edit cm kube-proxy -nkube-system
 # 将metricsBindAddress这段修改成metricsBindAddress: 0.0.0.0:10249
 # 重启kube-proxy:
-$ k get pods -nkube-system | grep kube-proxy | awk '{print $1}' | xargs kubectl delete pods -n kube-system
+k get pods -nkube-system | grep kube-proxy | awk '{print $1}' | xargs kubectl delete pods -n kube-system
 ```
 
 #### 监控 **etcd** 组件
@@ -147,28 +147,30 @@ $ k get pods -nkube-system | grep kube-proxy | awk '{print $1}' | xargs kubectl 
 #### 清理 **Prometheus-Operator**
 
 ```
-$ k delete -f manifests/
-$ k delete -f manifests/setup
+k delete -f manifests/
+k delete -f manifests/setup
 ```
 
 ### TroubleShooting
+
+___
 
 #### 多副本采集数据不一致
 
 >多副本的情况下正常来说请求是会去轮询访问后端的两个 `Prometheus` 实例, 这样可能就会导致每次请求到的 `Prometheus` 数据都不一样，解决这个问题的方法则可以在创建 `Service` 的时候添加 `sessionAffinity: ClientIP` 这样的属性，然后会根据 `ClientIP` 来做 `session` 亲和性。所以不用担心请求会到不同的副本上去
 
 
-#### 无法通过 **statefulset** 对象来删除 **Prometheus** 或 **Alertmanager**
+#### 无法通过 **statefulSet** 对象来删除 **Prometheus** 或 **Alertmanager**
 
 >这是因为它们由 **Operator** 控制
 
 ```sh
 # 查看Prometheus对象下定义的资源
-$ k get prometheus -nmonitoring
+k get prometheus -nmonitoring
 
 NAME   VERSION   DESIRED   READY   RECONCILED   AVAILABLE   AGE
 k8s    2.46.0    2         2       True         True        3h54m
 
 # 删除Prometheus对象
-$ k delete prometheus k8s -nmonitoring 
+k delete prometheus k8s -nmonitoring 
 ```

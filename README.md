@@ -23,9 +23,9 @@
 ├─Log
 │  ├─Export   # 日志类的 Export
 │  │  └─k8sEvenExport
-│  ├─Loki   # 收集日志
+│  ├─Loki   # 日志记录引擎，负责存储日志和处理查询
 │  ├─Minio    # s3 持久化存储日志
-│  ├─Promtail   # 日志采集
+│  ├─Promtail   # 代理，负责收集日志并将其发送给 loki
 │  ├─Redis  # 缓存数据库
 │  └─Rules  # 告警规则
 └─Metric

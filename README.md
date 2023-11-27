@@ -6,6 +6,8 @@
 
 ### K8S版本兼容
 
+___
+
 | kube-prometheus stack                                                                      | Kubernetes 1.21 | Kubernetes 1.22 | Kubernetes 1.23 | Kubernetes 1.24 | Kubernetes 1.25 |
 | ------------------------------------------------------------------------------------------ | --------------- | --------------- | --------------- | --------------- | --------------- |
 | [`release-0.9`](https://github.com/prometheus-operator/kube-prometheus/tree/release-0.9)   | ✔               | ✔               | ✗               | ✗               | ✗               |
@@ -15,6 +17,8 @@
 | [`main`](https://github.com/prometheus-operator/kube-prometheus/tree/main)                 | ✗               | ✗               | ✗               | ✗               | ✔               |
 
 ### 目录结构
+
+___
 
 ```
 ├─Alertmanager    # 告警平台
@@ -31,6 +35,8 @@
 
 ### 项目配置
 
+___
+
 >与原生的 **Kube-Prometheus** 不同。在原生项目的基础上增加了一些配置，和完善避免部署原生时踩过的一些坑。其中一些默认值需要进行修改，例如 `storageClass`, `ingress` 等资源。
 >>每个文件内都有清晰的注解说明，请仔细查看。
 
@@ -39,12 +45,14 @@
 |      Prometheus 配置      |     manifests/prometheus-prometheus.yaml      |
 |       Blackbox 配置       | manifests/blackboxExporter-configuration.yaml |
 |       自动发现配置        |     manifests/prometheus-additional.yaml      |
-|         RBAC配置          |     manifests/prometheus-clusterRole.yaml     |
+|         RBAC 配置          |     manifests/prometheus-clusterRole.yaml     |
 | Alertmanager 告警路由配置 |     Alertmanager/alertmanager-secret.yaml     |
 |       Grafana 配置        |          Grafana/grafana-config.yaml          |
 |   Prometheusalert 配置    |  Prometheusalert/prometheusAlert-config.yaml  |
 
 ### 项目部署
+
+____
 
 >
 
@@ -55,6 +63,8 @@ $ kubectl create -f manifests/
 ```
 
 ### TIPS
+
+___
 
 #### 配置多个 **AlertmanagerConfig**
 

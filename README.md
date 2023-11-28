@@ -2,172 +2,60 @@
 
 >Build Your Kubernetes Monitoring System
 
-![Prometheus](https://img.shields.io/badge/Prometheus-E6522C?style=for-the-badge&logo=Prometheus&logoColor=white) ![Grafana](https://img.shields.io/badge/grafana-%23F46800.svg?style=for-the-badge&logo=grafana&logoColor=white) 	![Kubernetes](https://img.shields.io/badge/kubernetes-%23326ce5.svg?style=for-the-badge&logo=kubernetes&logoColor=white) ![Prometheusalert](https://img.shields.io/badge/Prometheusalert-E6522C?style=for-the-badge&logoColor=white) ![VictoriaMetrics](https://img.shields.io/badge/VictoriaMetrics-%23512BD4?style=for-the-badge&logo=VictoriaMetrics&logoColor=white)
-
-### K8S版本兼容
-
-| kube-prometheus stack                                                                      | 1.20 | 1.21 | 1.22 | 1.23 | 1.24 | 1.25 | 1.26 | 1.27 | 1.28 |
-| ------------------------------------------------------------------------------------------ | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- |
-| [`release-0.7`](https://github.com/prometheus-operator/kube-prometheus/tree/release-0.7)   | ✔    | ✗    | ✗    | ✗    | ✗    | ✗    | ✗    | ✗    | ✗    |
-| [`release-0.8`](https://github.com/prometheus-operator/kube-prometheus/tree/release-0.8)   | ✔    | ✔    | ✗    | ✗    | ✗    | ✗    | ✗    | ✗    | ✗    |
-| [`release-0.9`](https://github.com/prometheus-operator/kube-prometheus/tree/release-0.9)   | ✗    | ✔    | ✔    | ✗    | ✗    | ✗    | ✗    | ✗    | ✗    |
-| [`release-0.10`](https://github.com/prometheus-operator/kube-prometheus/tree/release-0.10) | ✗    | ✗    | ✔    | ✔    | ✗    | ✗    | ✗    | ✗    | ✗    |
-| [`release-0.11`](https://github.com/prometheus-operator/kube-prometheus/tree/release-0.11) | ✗    | ✗    | ✗    | ✔    | ✔    | ✗    | ✗    | ✗    | ✗    |
-| [`release-0.12`](https://github.com/prometheus-operator/kube-prometheus/tree/release-0.12) | ✗    | ✗    | ✗    | ✗    | ✔    | ✔    | ✗    | ✗    | ✗    |
-| [`release-0.13`](https://github.com/prometheus-operator/kube-prometheus/tree/release-0.13) | ✗    | ✗    | ✗    | ✗    | ✗    | ✗    | ✔    | ✔    | ✔    |
-| [`main`](https://github.com/prometheus-operator/kube-prometheus/tree/main)                 | ✗    | ✗    | ✗    | ✗    | ✗    | ✗    | ✗    | ✔    | ✔    |
+![Loki](https://img.shields.io/badge/Loki-%23F46800.svg?style=for-the-badge&logo=grafana&logoColor=white) ![Grafana](https://img.shields.io/badge/grafana-%23F46800.svg?style=for-the-badge&logo=grafana&logoColor=white) ![Promtail](https://img.shields.io/badge/Promtail-%23F46800.svg?style=for-the-badge&logo=grafana&logoColor=white) 	![Kubernetes](https://img.shields.io/badge/kubernetes-%23326ce5.svg?style=for-the-badge&logo=kubernetes&logoColor=white)
 
 ### 目录结构
 
-```
-├─Log
-│  ├─Export   # 日志类的 Export
-│  │  └─k8sEvenExport
-│  ├─Loki   # 日志记录引擎，负责存储日志和处理查询
-│  ├─Minio    # s3 持久化存储日志
-│  ├─Promtail   # 代理，负责收集日志并将其发送给 loki
-│  ├─Redis  # 缓存数据库
-│  └─Rules  # 告警规则
-└─Metric
-    ├─Alertmanager    # 告警平台
-    ├─ExternalRules   # 扩展的告警规则
-    ├─Grafana   # 数据展示
-    ├─Kube-Prometheus   # Kube-Prometheus-Operator 项目版本
-    │  └─Release-0.12
-    │      └─manifests
-    │          └─setup
-    ├─PrometheusAlert   # 告警通知渠道，格式化模板
-    │  └─wx-tpl   # 告警模板简单示例
-    └─ScrapMonitor    # 监控抓取配置
-        └─exporter    # Export 配置
+___
+```sh
+├─Export    # 日志类的 Export
+│  └─k8sEvenExport
+├─Loki    # 日志记录引擎，负责存储日志和处理查询
+├─Minio   # 代理，负责收集日志并将其发送给 loki
+├─Promtail    # 代理，负责收集日志并将其发送给 loki
+├─Redis   # 缓存数据库
+└─Rules   # 告警规则
 ```  
-
-### 项目部署
-
->
-
-```
-$ kubectl create -f manifests/setup
-$ kubectl create -f Grafana/ -f PrometheusAlert/ -f Alertmanager/
-$ kubectl create -f manifests/
-```
 
 ### 项目配置
 
->与原生的 **Kube-Prometheus** 不同。在原生项目的基础上增加了一些配置，和完善避免部署原生时踩过的一些坑。其中一些默认值需要进行修改，例如 `storageClass`, `ingress` 等资源。
+___
+>相关文件是由 `helm` 渲染 `grafana/loki-simple-scalable` 仓库后转换出来的 `yaml` 文件。对比原生 `helm` 安装增加了一些配置，和完善避免部署原生时踩过的坑。
 >>每个文件内都有清晰的注解说明，请仔细查看。
 
-|      Explain       |                     Path                      |
-| :----------------: | :-------------------------------------------: |
-|  Prometheus 配置   |     manifests/prometheus-prometheus.yaml      |
-|   Blackbox 配置    | manifests/blackboxExporter-configuration.yaml |
-| 自动发现配置(必选) |     manifests/prometheus-additional.yaml      |
-|   RBAC配置(必选)   |     manifests/prometheus-clusterRole.yaml     |
+|    Explain    |          Path           |
+| :-----------: | :---------------------: |
+|   Loki 配置   |  Loki/loki-config.yaml  |
+| Promtail 配置 | Promtail/configmap.yaml |
+
+### 项目部署
+
+___
+>`Loki` 使用**读写分离模式部署**, 这种模式下每天可承载的日志量约 100GB，还可以通过横向扩展副本数来处理 `TB` 级的日志数据
+>>在这种模式下，Loki 的组件微服务被绑定到两个目标中：`-target=read` 和 `-target=write`
+>`Loki` 前面还需有一个负载均衡器，它将 `/loki/api/v1/push` 流量路由到写入节点，所有其他请求都转到读取节点，流量以循环方式发送。
+>>>*Read* 节点数量不能超过 *Write* 节点数量
+
+```
+k create -f Minio/ -f Redis/
+k create -f Loki/
+k create -f Promtail/
+k create -f Grafana/
+```
 
 ### TIPS
 
-#### 配置多个 **AlertmanagerConfig**
+___
 
-如果你有多个告警接收人和路由配置时，不想挤压在一个文件内，可以使用这个Kind资源 `AlertmanagerConfig`, 帮助我们创建管理告警配置。
-
-#### 配置外部 **Alertmanager**
-
-如果你有多套集群发送到一个 **Alertmanager** 时需要添加以下参数 (文件默认在 manifests 下 `alert-center-external-secert.yaml`):
-```yaml
-kubectl apply -f - <<-EOF
-apiVersion: v1
-kind: Secret
-metadata:
-  name: alert-center-external
-  namespace: monitoring
-stringData:
-  alert-config: |-
-    - path_prefix: /
-      scheme: https
-      timeout: 10s
-      api_version: v1
-      static_configs:
-        - targets: ['alertmanager.k8s.local']
-EOF
-```
-```yaml
-apiVersion: monitoring.coreos.com/v1
-kind: Prometheus
-metadata:
-  name: k8s
-  namespace: monitoring
-spec:
-  additionalAlertManagerConfigs:
-    key: alert-config
-    name: alert-center-external
-```
-
-#### 配置自定义监控
-
->在`Pormetheus-Operator`中给我们提供了`ServiceMonitor`对象,我们可以通过`ServiceMonitor`来关联`Metrics`数据接口的`Service`对象。
->>常见的监控对象在`PROMETHEUS/scrape`
-
-#### 配置自动发现
-
->通过添加注解`prometheus.io/scrape=true`来进行`service/pod`发现并进行自动监控,此前我们已经在Prometheus中进行配置`Prometheus.spec.additionalScrapeConfigs`。
-
-#### 配置告警规则
-
->想要自定义一个报警规则，只需要创建一个能够被 `prometheus` 对象匹配的 `PrometheusRule` 对象即可。
->>常见的告警规则在`PROMETHEUS/rules`。
-
-#### 监控 **kube_proxy** 组件
+#### 清理 **Loki**
 
 ```
-# kube-proxy默认监听的地址是127.0.0.1:10249，如果你是1.26的版本则默认不开启。
-# 修改监听的端口，按如下方法:
-$ k edit cm kube-proxy -nkube-system
-# 将metricsBindAddress这段修改成metricsBindAddress: 0.0.0.0:10249
-# 重启kube-proxy:
-$ k get pods -nkube-system | grep kube-proxy | awk '{print $1}' | xargs kubectl delete pods -n kube-system
-```
-
-#### 监控 **etcd** 组件
-
-```
-# 在 master上修改 /etc/kubernetes/manifests/etcd.yaml 文件
-# 将 command 中修改 --listen-metrics-urls=http://127.0.0.1:2381
---listen-metrics-urls=http://0.0.0.0:2381
-```
-
-#### 监控 **kube_scheduler** 组件和 **kube_controller_manager** 组件
-
-```
-# 在 master 路径下 /etc/kubernetes/manifests 找到这两个文件
-# 将 command 中修改 --bind-address=127.0.0.1
---bind-address=0.0.0.0
-```
-
-#### 清理 **Prometheus-Operator**
-
-```
-$ k delete -f manifests/
-$ k delete -f manifests/setup
+k delete -f Loki/
+k delete -f Promtail/
+k delete -f Minio/ -f Redis/
+k delete -f Grafana/
 ```
 
 ### TroubleShooting
 
-#### 多副本采集数据不一致
-
->多副本的情况下正常来说请求是会去轮询访问后端的两个 `Prometheus` 实例, 这样可能就会导致每次请求到的 `Prometheus` 数据都不一样，解决这个问题的方法则可以在创建 `Service` 的时候添加 `sessionAffinity: ClientIP` 这样的属性，然后会根据 `ClientIP` 来做 `session` 亲和性。所以不用担心请求会到不同的副本上去
-
-
-#### 无法通过 **statefulset** 对象来删除 **Prometheus** 或 **Alertmanager**
-
->这是因为它们由 **Operator** 控制
-
-```sh
-# 查看Prometheus对象下定义的资源
-$ k get prometheus -nmonitoring
-
-NAME   VERSION   DESIRED   READY   RECONCILED   AVAILABLE   AGE
-k8s    2.46.0    2         2       True         True        3h54m
-
-# 删除Prometheus对象
-$ k delete prometheus k8s -nmonitoring 
-```
+___

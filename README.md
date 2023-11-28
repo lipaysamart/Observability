@@ -2,7 +2,8 @@
 
 >Build Your Kubernetes Monitoring System
 
-![Prometheus](https://img.shields.io/badge/Prometheus-E6522C?style=for-the-badge&logo=Prometheus&logoColor=white) ![Grafana](https://img.shields.io/badge/grafana-%23F46800.svg?style=for-the-badge&logo=grafana&logoColor=white) 	![Kubernetes](https://img.shields.io/badge/kubernetes-%23326ce5.svg?style=for-the-badge&logo=kubernetes&logoColor=white) ![Prometheusalert](https://img.shields.io/badge/Prometheusalert-E6522C?style=for-the-badge&logoColor=white)
+![Prometheus](https://img.shields.io/badge/Prometheus-%23E6522C?logo=prometheus&logoColor=white) ![Grafana](https://img.shields.io/badge/Grafana-%23F46800?logo=grafana&logoColor=white) ![Alertmanager](https://img.shields.io/badge/Alertmanager-%23EB1510?logo=alertmanager&logoColor=white) ![Prometheusalert](https://img.shields.io/badge/Notification_Center-Prometheusalert-%23FF9E0F?logoColor=white)
+
 
 ### K8S版本兼容
 

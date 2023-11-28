@@ -2,7 +2,7 @@
 
 >Build Your Kubernetes Monitoring System
 
-![Loki](https://img.shields.io/badge/Loki-%23F46800.svg?style=for-the-badge&logo=grafana&logoColor=white) ![Grafana](https://img.shields.io/badge/grafana-%23F46800.svg?style=for-the-badge&logo=grafana&logoColor=white) ![Promtail](https://img.shields.io/badge/Promtail-%23F46800.svg?style=for-the-badge&logo=grafana&logoColor=white) 	![Kubernetes](https://img.shields.io/badge/kubernetes-%23326ce5.svg?style=for-the-badge&logo=kubernetes&logoColor=white)
+![Grafana](https://img.shields.io/badge/Grafana-%23F46800?logo=grafana&logoColor=white) ![Redis](https://img.shields.io/badge/Redis-%23DC382D?logo=redis&logoColor=white) ![Minio](https://img.shields.io/badge/Minio-%23C72E49?logo=minio&logoColor=white) ![Loki](https://img.shields.io/badge/Loki-Grafana-%23F46800) ![Promtail](https://img.shields.io/badge/Promtail-Grafana-%23F46800) 
 
 ### 目录结构
 

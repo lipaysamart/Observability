@@ -18,7 +18,7 @@ stringData:
                 "name": "prometheus",
                 "orgId": 1,
                 "type": "prometheus",
-                "url": "http://vm-single:8428", # Prometheus 数据源
+                "url": "http://vm-single:8429", # Prometheus 数据源
                 "version": 1
             }
         ]

@@ -1,0 +1,77 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: hk-mysqld-exporter
+  namespace: monitoring
+  labels:
+    app: mysqld-exporter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysqld-exporter
+  template:
+    metadata:
+      labels:
+        app: mysqld-exporter
+    spec:
+      containers:
+        - name: mysqld-exporter
+          image: 'registry.cn-guangzhou.aliyuncs.com/kubernetes-default/mysqld_exporter:v1'
+          args:
+            - "--web.listen-address=:9104"
+            - "--config.my-cnf=/etc/mysql/my.cnf"
+          ports:
+            - name: metrics
+              containerPort: 9104
+              protocol: TCP
+          volumeMounts:
+            - name: mysql-volume
+              mountPath: /etc/mysql
+              readOnly: true
+          resources:
+            requests:
+              memory: 200Mi
+              cpu: 200m
+            limits:
+              memory: 200Mi
+              cpu: 200m
+      volumes:
+        - name: mysql-volume
+          configMap:
+            name: multi-mysql
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hk-mysqld-svc
+  namespace: monitoring
+  annotations:
+    prometheus.io/scrape: 'true'
+  labels:
+    app: mysqld-exporter
+spec:
+  selector:
+    app: mysqld-exporter
+  ports:
+    - name: metrics
+      protocol: TCP
+      port: 9104
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: multi-mysql
+  namespace: monitoring
+data:
+  my.cnf: |
+    [client]
+    host=xxxxx.mysql.rds.aliyuncs.com
+    port=3306
+    user=xxxxxx
+    password=xxxxxxxxx
+    [client.server]
+    host=xxxxx.mysql.rds.aliyuncs.com
+    port=3306
+    user=xxxxxx
+    password=xxxxxxxx

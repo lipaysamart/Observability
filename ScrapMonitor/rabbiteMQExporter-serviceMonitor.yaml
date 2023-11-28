@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: outside-rabbitmq   #endpoint的名称一定要与service的名称一致 
+  namespace: monitoring
+subsets:
+- addresses:
+  - ip: 172.20.1.206
+  ports:
+  - port: 15692
+    name: outside-rabbitmq-port
+    protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: outside-rabbitmq
+  namespace: monitoring
+  labels:
+    app.kubernetes.io/component: rabbitmq
+spec:
+  type: ClusterIP   #  通过域名映射时需要修改为 type:ExternalName 并增加字段 spec.externalName
+  ports:
+  - name: outside-rabbitmq-port
+    port: 15692
+    protocol: TCP
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+    name: outside-rabbitmq-metrics
+    namespace: monitoring
+spec:
+  endpoints:
+  - interval: 15s
+    port: outside-rabbitmq-port # 对应 service 的 ports.name
+  namespaceSelector:
+    matchNames:
+    - monitoring
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: rabbitmq

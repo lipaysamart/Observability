@@ -1,0 +1,140 @@
+apiVersion: monitoring.coreos.com/v1
+kind: Probe
+metadata:
+  name: web-static
+  namespace: monitoring
+spec:
+  interval: 15s
+  jobName: web
+  module: http_2xx
+  prober:
+    url: blackbox-exporter:9115
+  targets:
+    staticConfig:
+      labels:
+        web: hk-static
+      relabelingConfigs:
+      - sourceLabels:
+        - __meta_kubernetes_namespace
+        targetLabel: namespace
+      - sourceLabels:
+        - __meta_kubernetes_ingress_name
+        targetLabel: ingress
+      static:
+      - https://pic.sjfood3-dev240.wiltechs.com:30002/
+      - https://bg-api.sjfood3-dev240.wiltechs.com/Controllers/Home/Home.html
+      - http://sap.sjfood3-dev240.wiltechs.com
+      - https://im.wiltechs.cn:51070
+      - https://yesmeal.us/hcYEAp
+      - https://yesmeal.us/rVNecF
+      - https://company.intimetms.com
+      - https://preprdshopping.yamimeal.com
+      - https://uatshopping.yamimeal.com
+      - https://test-proton-tms.wiltechs.com
+      - https://testpaymentspa.yamimeal.com
+      - https://testmerchantspa.yamimeal.com
+      - https://orders.yamimeal.com
+      - https://testshopping.yamimeal.com
+      - https://api.sjfood3-dev240.wiltechs.com
+      - https://imagewcf-sjfood3.wiltechs.com:30002/
+      - https://barcode4cnm.wiltechs.com/
+      - https://im.wiltechs.com:51020/
+      - https://respond.wiltechs.com:13010/
+      - https://respond.wiltechs.com/
+      - https://respond.wiltechs.com:13198/
+      - https://stocktaking.wiltechs.com/
+      - https://ticket4hr.wiltechs.com/
+      - https://ticket4hr.wiltechs.com:6188/
+      - https://uatshopping.yamimeal.com
+      - https://testpaymentspa.yamimeal.com
+      - https://testmerchantspa.yamimeal.com
+      - https://trellowebhooks.sjfood.us
+      - https://barcode4usm.sjfood.us/Content/Icheck/icheck.js
+      - https://barcode4us.sjfood.us:30082
+      - https://stocktaking.sjfood.us
+      - https://myofficeweight.sjfood.us:20443
+      - https://myoffice.sjfood.us
+      - https://myoffice.sjfood.us:20443
+      - https://myofficepc.sjfood.us:20082
+      - https://approved.sjfood.us/swagger/ui/index
+      - https://easypm.sjfood.us:8080
+      - https://pinecone.sjfood.us
+      - https://pineconeAttachment.sjfood.us
+      - https://accidentsrecords-api.sjfood.us/favicon.ico
+      - https://accidentsrecords.sjfood.us
+      - https://verity.sjfood.us
+      - https://passport.sjfood.us/sso/login?ReturnUrl=%2F
+      - https://foundation.sjfood.us/Scripts/foundation.js
+      - https://im.sjfood.us:51030
+      - https://im.sjfood.us:6426
+      - https://im.sjfood.us:51319
+      - https://im.sjfood.us:51070/Content/Scripts/menu.js
+      - https://myoa.sjfood.us/Scripts/menu.js
+      - https://myoa.sjfood.us:44301
+      - https://nuget.sjfood.us
+      - https://oa-video.sjfood.us
+      - https://apnew.sjfood.us:30082
+      - https://apnew.sjfood.us/Scripts/jquery.form.js
+      - https://apnew-api.sjfood.us
+      - https://respond.sjfood.us:40801
+      - https://respond.sjfood.us:40802
+      - https://respond.sjfood.us/Scripts/menu.js
+      - https://ticket.sjfood.us/Scripts/menu.js
+      - https://ticket.sjfood.us:44301
+      - https://ticket4hr.sjfood.us:44301
+      - https://ticket4hr.sjfood.us/Scripts/menu.js
+      - https://trello.sjfood.us:6423
+      - https://trello.sjfood.us
+      - https://cdn.protonsystem.io/logo1.png
+      - https://cdn.protonlive.com
+      - https://management.yamimeal.com/api/merch/list
+      - https://merchant.yamimeal.com/api/merch/list
+      - https://apiwin.yamimeal.com/api/merch/list
+      - https://merchants.yamimeal.com/api/merch/list
+      - https://api.yamimeal.com/api/merch/list
+      - https://p-lms20-oss.sjfood.us
+      - https://imagewcf-sjfood3.sjfood.us:30002
+      - https://plugin.yamimeal.com/Controllers/Home/Home.html
+      - https://sapapi.sjfood.us/Controllers/Home.html
+      - https://sjfoodbackgroundapi.sjfood.us/Controllers/Home/Home.html
+      - https://yamimeal.ca/mxC3Qa
+      - https://sapgateway.sjfood.us/swagger/index.html
+      - https://preprdshopping.yamimeal.com
+      - https://paymentspa.yamimeal.com
+      - https://merchantspa.yamimeal.com
+---
+apiVersion: monitoring.coreos.com/v1
+kind: Probe
+metadata:
+  name: web-discover
+  namespace: monitoring
+spec:
+  interval: 15s
+  jobName: hk-ingress-discover
+  module: http_2xx
+  prober:
+    url: blackbox-exporter:9115
+  targets:
+    ingress:
+      namespaceSelector:
+        any: true
+      relabelingConfigs:
+      - action: keep
+        regex: "true"
+        sourceLabels:
+        - __meta_kubernetes_ingress_annotation_prometheus_io_probe
+      - action: replace
+        regex: (.+);(.+);(.+)
+        replacement: ${1}://${2}${3}
+        separator: ;
+        sourceLabels:
+        - __meta_kubernetes_ingress_scheme
+        - __meta_kubernetes_ingress_host
+        - __meta_kubernetes_ingress_path
+        targetLabel: __param_target
+      - sourceLabels:
+        - __meta_kubernetes_namespace
+        targetLabel: namespace
+      - sourceLabels:
+        - __meta_kubernetes_ingress_name
+        targetLabel: ingress

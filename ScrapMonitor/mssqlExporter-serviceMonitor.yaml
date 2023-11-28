@@ -1,0 +1,16 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+    name: mssqld-metrics
+    namespace: monitoring
+spec:
+  endpoints:
+  - interval: 15s
+    port: 4000
+  namespaceSelector:
+    matchNames:
+    - monitoring
+  selector:
+    matchLabels:
+      app: mssql-exporter

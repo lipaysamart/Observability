@@ -33,10 +33,10 @@ ___
 ___
 >`Loki` 使用**读写分离模式部署**, 这种模式下每天可承载的日志量约 100GB，还可以通过横向扩展副本数来处理 `TB` 级的日志数据
 >>在这种模式下，Loki 的组件微服务被绑定到两个目标中：`-target=read` 和 `-target=write`
->`Loki` 前面还需有一个负载均衡器，它将 `/loki/api/v1/push` 流量路由到写入节点，所有其他请求都转到读取节点，流量以循环方式发送。
+>>`Loki` 前面还需有一个负载均衡器，它将 `/loki/api/v1/push` 流量路由到写入节点，所有其他请求都转到读取节点，流量以循环方式发送。
 >>>*Read* 节点数量不能超过 *Write* 节点数量
 
-```
+```sh
 k create -f Minio/ -f Redis/
 k create -f Loki/
 k create -f Promtail/
@@ -49,7 +49,7 @@ ___
 
 #### 清理 **Loki**
 
-```
+```sh
 k delete -f Loki/
 k delete -f Promtail/
 k delete -f Minio/ -f Redis/

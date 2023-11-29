@@ -15,7 +15,7 @@ items:
 
               ]
           },
-          "editable": false,
+          "editable": true,
           "gnetId": null,
           "graphTooltip": 1,
           "hideControls": false,
@@ -617,7 +617,7 @@ items:
 
               ]
           },
-          "editable": false,
+          "editable": true,
           "gnetId": null,
           "graphTooltip": 0,
           "hideControls": false,
@@ -4247,7 +4247,7 @@ items:
 
               ]
           },
-          "editable": false,
+          "editable": true,
           "gnetId": null,
           "graphTooltip": 0,
           "hideControls": false,
@@ -19380,7 +19380,7 @@ items:
 
               ]
           },
-          "editable": false,
+          "editable": true,
           "gnetId": null,
           "graphTooltip": 0,
           "hideControls": false,
@@ -24798,7 +24798,7 @@ items:
 
               ]
           },
-          "editable": false,
+          "editable": true,
           "gnetId": null,
           "graphTooltip": 1,
           "hideControls": false,
@@ -25849,7 +25849,7 @@ items:
 
               ]
           },
-          "editable": false,
+          "editable": true,
           "gnetId": null,
           "graphTooltip": 1,
           "hideControls": false,
@@ -26926,7 +26926,7 @@ items:
 
               ]
           },
-          "editable": false,
+          "editable": true,
           "gnetId": null,
           "graphTooltip": 1,
           "hideControls": false,
@@ -27987,7 +27987,7 @@ items:
 
               ]
           },
-          "editable": false,
+          "editable": true,
           "gnetId": null,
           "graphTooltip": 1,
           "hideControls": false,
@@ -29041,7 +29041,7 @@ items:
 
               ]
           },
-          "editable": false,
+          "editable": true,
           "gnetId": null,
           "graphTooltip": 0,
           "hideControls": false,
@@ -33698,7 +33698,7 @@ items:
 
               ]
           },
-          "editable": false,
+          "editable": true,
           "gnetId": null,
           "graphTooltip": 0,
           "hideControls": false,
@@ -34957,7 +34957,7 @@ items:
 
               ]
           },
-          "editable": false,
+          "editable": true,
           "gnetId": null,
           "graphTooltip": 0,
           "hideControls": false,

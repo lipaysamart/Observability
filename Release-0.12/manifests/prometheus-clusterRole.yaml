@@ -13,7 +13,9 @@ rules:
   - apiGroups:
     # 为""则代表使用当前资源下的API
       - ""
-    resources:
+      - networking.k8s.io
+      resources:
+      - ingresses
       - nodes
       - services
       - endpoints

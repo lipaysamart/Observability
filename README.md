@@ -1,15 +1,14 @@
-## Observability
+# Observability
 
 >Build Your Kubernetes Monitoring System
 
 ![Prometheus](https://img.shields.io/badge/Prometheus-E6522C?style=for-the-badge&logo=Prometheus&logoColor=white) ![Grafana](https://img.shields.io/badge/grafana-%23F46800.svg?style=for-the-badge&logo=grafana&logoColor=white) 	![Kubernetes](https://img.shields.io/badge/kubernetes-%23326ce5.svg?style=for-the-badge&logo=kubernetes&logoColor=white) ![VictoriaMetrics](https://img.shields.io/badge/VictoriaMetrics-%23512BD4?style=for-the-badge&logo=VictoriaMetrics&logoColor=white)
 
-### 项目背景
+## 项目背景
 
-___
 >记录自己搭建整套可观测性的过程。
 
-### 目录结构
+## 目录结构
 
 ```
 ├─Log
@@ -35,7 +34,7 @@ ___
     └─Grafana   # 数据展示
 ```  
 
-### 项目说明
+## 项目说明
 
 >日志系统方案使用 `PLAG` 结构，由 `Promtail` 数据采集 + `Loki` 做数据读/写/存 + `Alertmanager` 告警 + `Grafana` 展示组成。 
 
@@ -51,7 +50,7 @@ ___
 - `Victoria-Metrics` 支持 `Prometheus` 的查询语言 `PromQL`，并提供了额外的功能，数据压缩和快速数据恢复。
 
 
-### 项目部署
+## 项目部署
 
 - [LOG](./Log/README.md)
 - [METRICS](./Metric/README.md)

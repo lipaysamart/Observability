@@ -1,17 +1,4 @@
 ---
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: prometheus-alert-mysql-pvc
-  namespace: monitoring
-spec:
-  storageClassName: nfs-csi-default
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 20Gi
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -46,7 +33,7 @@ spec:
       volumes:
         - name: data
           persistentVolumeClaim:
-            claimName: prometheus-alert-mysql-pvc
+            claimName: prometheus-alert-pvc
         - name: mycnf
           configMap:
             name: mycnf

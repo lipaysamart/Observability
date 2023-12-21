@@ -55,7 +55,7 @@ spec:
             path: user.csv
       - name: app-db
         persistentVolumeClaim:
-          claimName: promealert-pvc
+          claimName: prometheus-alert-pvc
 ---
 apiVersion: v1
 kind: Service

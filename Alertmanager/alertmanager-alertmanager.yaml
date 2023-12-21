@@ -27,21 +27,21 @@ spec:
   # 扩展的URL，防止告警时生成的URL为容器ID
   externalUrl: https://alertmanager.k8s.local
   # 持久化数据, 防止容器重启导致silence规则丢失
-  storage:
-    volumeClaimTemplate:
-      spec:
-        storageClassName: nfs  # 填写你的 SC
-        accessModes:
-          - ReadWriteOnce
-        resources:
-          requests:
-            storage: 1Gi
+  # storage:
+  #   volumeClaimTemplate:
+  #     spec:
+  #       storageClassName: nfs  # 填写你的 SC
+  #       accessModes:
+  #         - ReadWriteOnce
+  #       resources:
+  #         requests:
+  #           storage: 1Gi
   resources:
     limits:
-      cpu: 50m
+      cpu: 100m
       memory: 100Mi
     requests:
-      cpu: 50m
+      cpu: 4m
       memory: 100Mi
   securityContext:
     fsGroup: 2000

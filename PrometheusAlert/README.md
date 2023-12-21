@@ -6,7 +6,7 @@ $ vim alertTool/prometheusAlert-config.yaml
 ```
 
 ```
-# 增加了 /app/db 目录的数据持久化。防止容器重启，模板全部消失。
+# 增加了 /app/db 目录的数据持久化。防止容器重启模板全部消失。
 $ vim alertTool/prometheusAlert-deploy.yaml
 ---
 # 这里改成了 utc-8
@@ -15,6 +15,10 @@ $ vim alertTool/prometheusAlert-deploy.yaml
           value: "America/Los_Angeles"
 # svc 暴露为 NodePort
   type: NodePort
+
+# 如果使用 Mysql 作外部存储。则需配置 prometheusAlert-config.yaml
+  db_driver=mysql
+
 ```
 ## 相关仓库
 [![standard-readme compliant](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)

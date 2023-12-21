@@ -33,29 +33,29 @@ spec:
   # 启用 AdminAPI
   enableAdminAPI: true
   # 持久化存储。(由于只是 6h的数据，我们不需要分配太多空间)
-  storage:
-    volumeClaimTemplates:
-    - metadata:
-        name: prom
-      spec:
-        accessModes: 
-          - ReadWriteOnce
-        storageClassName: default
-        resources:
-          requests:
-            storage: 20Gi
+  # storage:
+  #   volumeClaimTemplates:
+  #   - metadata:
+  #       name: prom
+  #     spec:
+  #       accessModes: 
+  #         - ReadWriteOnce
+  #       storageClassName: nfs-csi-stateful
+  #       resources:
+  #         requests:
+  #           storage: 20Gi
   # 远程写入 vmsingle
   remoteWrite:
-    - url: https://vmsingle.k8s.local/api/v1/write
+    - url: http://vmsingle:8248/api/v1/write
       queueConfig:
         maxSamplesPerSend: 10000
         capacity: 20000
         maxShards: 30
       remoteTimeout: 1m
   # 添加外部的 Alertmanager地址
-  additionalAlertManagerConfigs:
-    key: alert-config
-    name: alert-center-external
+  # additionalAlertManagerConfigs:
+  #   key: alert-config
+  #   name: alert-center-external
   # 添加额外抓取配置
   additionalScrapeConfigs:
     name: additional-configs

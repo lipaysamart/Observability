@@ -14,7 +14,7 @@ rules:
     # 为""则代表使用当前资源下的API
       - ""
       - networking.k8s.io
-      resources:
+    resources:
       - ingresses
       - nodes
       - services

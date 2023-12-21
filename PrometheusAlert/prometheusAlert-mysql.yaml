@@ -5,7 +5,7 @@ metadata:
   name: prometheus-alert-mysql-pvc
   namespace: monitoring
 spec:
-  storageClassName: csi-alicloud-disk-efficiency
+  storageClassName: nfs-csi-default
   accessModes:
     - ReadWriteOnce
   resources:
@@ -29,11 +29,11 @@ spec:
         app: mysql
     spec:
       containers:
-        - image: mysql:5.6
+        - image: registry.cn-guangzhou.aliyuncs.com/kubernetes-default/mysql:5.7.43
           name: mysql
           env:
             - name: MYSQL_ROOT_PASSWORD
-              value: password
+              value: 123456
           ports:
             - containerPort: 3306
               name: mysql
@@ -90,12 +90,10 @@ kind: Ingress
 metadata:
   name: prometheus-alert-mysql
   namespace: monitoring
-  annotations:
-    nginx.ingress.kubernetes.io/whitelist-source-range: 120.237.78.114/32
 spec:
   ingressClassName: nginx
   rules:
-  - host: alertdb.sjfood.us
+  - host: alertdb.k8s.local
     http:
       paths:
       - backend:
@@ -107,5 +105,5 @@ spec:
         pathType: Prefix
   tls:
   - hosts:
-      - alertdb.sjfood.us
-    secretName: sjfood-us-tls
+      - alertdb.k8s.local
+    secretName: sre-ca

@@ -1,0 +1,20 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMProbe
+metadata:
+  name: vmprobe-static-example
+  namespace: vm-operator
+spec:
+  jobName: static-probe
+  scrapeTimeout: 8s
+  scrape_interval: 32s
+  vmProberSpec:
+    # by default scheme http, and path is /probe
+    url: prometheus-blackbox-exporter.vm-operator.svc:9115
+    path: /probe
+    scheme: "http"
+  module: http_2xx
+  targets:
+    staticConfig: 
+      targets:
+      -  vmagent-vmagent.vm-operator.svc:8429/health
+  interval: 5s

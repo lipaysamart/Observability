@@ -1,0 +1,22 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMProbe
+metadata:
+  name: vmprobe-ingress-example
+  namespace: vm-operator
+spec:
+  jobName: ingress-probe
+  scrapeTimeout: 8s
+  scrape_interval: 32s
+  vmProberSpec:
+    # by default scheme http, and path is /probe
+    url: prometheus-blackbox-exporter.vm-operator.svc:9115
+    path: /probe
+    scheme: "http"
+  module: http_2xx
+  targets:
+    ingress: 
+      selector:
+        matchExpressions:
+        - key: app
+          operator: Exists
+  interval: 5s

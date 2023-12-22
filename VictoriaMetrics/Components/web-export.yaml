@@ -1,0 +1,123 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-blackbox-exporter
+  namespace: vm-operator
+  labels:
+    app: prometheus-blackbox-exporter
+data:
+  blackbox.yaml: |
+    modules:
+      http_2xx:
+        http:
+          # 指定的协议
+          preferred_ip_protocol: ip4
+          # 若 HTTP 版本不在字段指定的范围内，则探测失败
+          valid_http_versions: [HTTP/1.1, HTTP/2]
+          # 此探针可以接受的响应状态码。默认值：2xx。注:2xx 表示所有 2xx 状态码，这个字段的值如果要手动指定，必须是 int 类型。若响应码不在该字段指定的范围内，则探测失败
+          valid_status_codes: [200, 301, 302, 401, 403, 404, 405]
+          # 请求方法
+          method: GET
+          # 是否开启跟随跳转
+          follow_redirects: false
+        prober: http
+        timeout: 8s
+      http_post_2xx: # POST 请求
+        http:
+          method: POST
+          preferred_ip_protocol: ip4
+        prober: http
+        timeout: 8s
+      tcp_connect: # tcp 连接
+        prober: tcp
+        timeout: 8s
+        tcp:
+          preferred_ip_protocol: ip4
+      dns:  # DNS 检测模块
+        prober: dns
+        dns:
+          transport_protocol: udp  # 默认是 udp，tcp
+          preferred_ip_protocol: ip4  # 默认是 ip6
+          query_name: kubernetes.default.svc.cluster.local # 利用这个域名来检查dns服务器
+        timeout: 2s
+      icmp:  # ping 检测服务器的存活
+        prober: icmp
+        timeout: 2s
+        icmp:
+          preferred_ip_protocol: "ip4"  # 默认是 ip6
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: prometheus-blackbox-exporter
+  namespace: vm-operator
+  labels:
+    app: prometheus-blackbox-exporter
+spec:
+  type: ClusterIP
+  ports:
+    - name: http
+      port: 9115
+      protocol: TCP
+  selector:
+    app: prometheus-blackbox-exporter
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus-blackbox-exporter
+  namespace: vm-operator
+  labels:
+    app: prometheus-blackbox-exporter
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: prometheus-blackbox-exporter
+  template:
+    metadata:
+      labels:
+        app: prometheus-blackbox-exporter
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - prometheus-blackbox-exporter
+              topologyKey: kubernetes.io/hostname
+      containers:
+        - name: blackbox-exporter
+          image: "prom/blackbox-exporter:v0.24.0"
+          args:
+            - "--config.file=/config/blackbox.yaml"
+          resources:
+            requests:
+              memory: 100Mi
+              cpu: "0.1"
+            limits:
+              memory: 200Mi
+              cpu: "0.25"
+          ports:
+            - containerPort: 9115
+              name: http
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+          volumeMounts:
+            - mountPath: /config
+              name: config
+      volumes:
+        - name: config
+          configMap:
+            name: prometheus-blackbox-exporter

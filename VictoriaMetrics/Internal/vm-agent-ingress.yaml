@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  labels:
+    app: probe
+  name: vmagent-ingress
+  namespace: vm-operator
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: vmagent.k8s.local
+    http:
+      paths:
+      - backend:
+          service:
+            name: vmagent-vmagent
+            port:
+              number: 8429
+        path: /
+        pathType: Prefix
+  tls:
+  - hosts:
+    - vmagent.k8s.local
+    secretName: sre-ca

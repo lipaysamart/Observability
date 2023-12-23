@@ -1,0 +1,17 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMUser
+metadata:
+  name: vmuser
+  namespace: vm-operator
+spec:
+  username: admin
+  password: admin
+  targetRefs:
+    - crd:
+        kind: VMAlertmanager
+        name: vmalertmanager
+        namespace: vm-operator
+      paths: ["/.*"]
+    - static:
+        url: http://vmalert-vmalert.vm-operator.svc:8080
+      paths: ["/api/v1/groups","/api/v1/alerts"]

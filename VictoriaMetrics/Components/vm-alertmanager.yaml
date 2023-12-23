@@ -1,0 +1,55 @@
+---
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMAlertmanager
+metadata:
+  name: vmalertmanager
+  namespace: vm-operator
+spec:
+  configNamespaceSelector: 
+    matchLabels:
+      kubernetes.io/metadata.name: vm-operator
+  replicaCount: 2
+  storage:
+    # 持久化告警数据
+    # volumeClaimTemplate:
+    #   spec:
+    #     accessModes:
+    #       - ReadWriteMany
+    #     resources:
+    #       requests:
+    #         storage: 2Gi
+    #     storageClassName: nfs-csi-stateful
+    emptyDir: {}
+  serviceSpec: 
+    metadata:
+      name: vmalertmanager-access
+      labels:
+        app.kubernetes.io/name: vmalertmanager
+    spec:
+        type: ClusterIP
+        # type: NodePort
+  routePrefix: "/alerts"
+  # routePrefix: "/"
+  retention: 128h
+  resources:
+    requests:
+      memory: 100Mi
+      cpu: "0.1"
+    limits:
+      memory: 200Mi
+      cpu: "0.25"
+  # image: victoriametrics/vmagent:v1.95.1
+  externalURL: "https://victoria.k8s.local/alerts"
+  # externalURL: "https://vmalertmanager.k8s.local/"
+  affinity:
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+            - key: app.kubernetes.io/name
+              operator: In
+              values:
+              - vmalertmanager
+          topologyKey: kubernetes.io/hostname

@@ -52,7 +52,7 @@ podSecurityContext: {}
 securityContext: {}
 
 operator:
-  # -- vm-operator会转换prometheus-operator对象
+  # -- vm-operator会转换 prometheus-operator 对象
   disable_prometheus_converter: false
   # -- Compare-options and sync-options for prometheus objects converted by operator for properly use with ArgoCD
   prometheus_converter_add_argocd_ignore_annotations: false
@@ -73,7 +73,7 @@ serviceAccount:
   # -- Specifies whether a service account should be created
   create: true
   # -- The name of the service account to use. If not set and create is true, a name is generated using the fullname template
-  name: ""
+  name: "vm-operator"
 
 ## See `kubectl explain poddisruptionbudget.spec` for more
 ## ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb/
@@ -168,7 +168,7 @@ admissionWebhooks:
 
 # -- configures monitoring with serviceScrape. VMServiceScrape must be pre-installed
 serviceMonitor:
-  enabled: false
+  enabled: true
   extraLabels: {}
   annotations: {}
   relabelings: []

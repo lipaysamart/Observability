@@ -1,0 +1,54 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: victoria-ingress
+  namespace: vm-operator
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: victoria.k8s.local
+    http:
+      paths:
+      - backend:
+          service:
+            name: vmagent-vmagent
+            port:
+              number: 8429
+        path: /
+        pathType: Prefix  
+      - backend:
+          service:
+            name: vmselect-access
+            port:
+              number: 8481
+        path: /select
+        pathType: Prefix
+      - backend:
+          service:
+            name: vmalert-access
+            port:
+              number: 8080
+        path: /vmalert
+        pathType: Prefix
+      - backend:
+          service:
+            name: vmalertmanager-access
+            port:
+              number: 9093
+        path: /alerts
+        pathType: Prefix
+  # - host: vmalertmanager.k8s.local
+  #   http:
+  #     paths:
+  #     - backend:
+  #         service:
+  #           name: vmalertmanager-access
+  #           port:
+  #             number: 9093
+  #       path: /alerts
+  #       pathType: Prefix
+  tls:
+  - hosts:
+    - victoria.k8s.local
+    # - vmalertmanager.k8s.local
+    secretName: sre-ca

@@ -66,8 +66,8 @@ spec:
       cpu: "500m"
       memory: "850Mi"
   selectAllByDefault: true
-  scrapeTimeout: "15s"
-  scrapeInterval: "45s"
+  scrapeTimeout: "20s"
+  scrapeInterval: "60s"
   logFormat: "json"
   logLevel: "INFO"
   vmAgentExternalLabelName: vmagent
@@ -89,8 +89,9 @@ spec:
   probeNamespaceSelector: {}
   serviceSpec:
     metadata:
-      name: vmagent-node-access
+      name: vmagent-access
       labels:
         app.kubernetes.io/name: vmagent
     spec:
-        type: NodePort
+        type: ClusterIP
+        # type: NodePort

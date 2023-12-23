@@ -1,0 +1,40 @@
+  apiVersion: operator.victoriametrics.com/v1beta1
+  kind: VMAlert
+  metadata:
+    name: vmalert
+    namespace: vm-operator
+  spec:
+    replicaCount: 2
+    evaluationInterval: "30s"
+    remoteWrite:
+      url: http://vmselect-vmcluster.vm-operator.svc:8481/select/0/prometheus
+    remoteRead:
+      url: http://vmselect-vmcluster.vm-operator.svc:8481/select/0/prometheus
+    datasource:
+      url: http://vmselect-vmcluster.vm-operator.svc:8481/select/0/prometheus
+    notifiers:
+      - url: http://vmalertmanager.vm-operator.svc:9093
+    ruleSelector: {}
+    externalLabels:
+      tenant: "0"
+    ruleNamespaceSelector: 
+      matchLabels:
+        kubernetes.io/metadata.name: vm-operator
+    serviceSpec:
+      metadata:
+        name: vmalert-access
+        labels:
+          app.kubernetes.io/name: vmalert
+      spec:
+        type: ClusterIP
+        # type: NodePort
+    affinity:
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+        - labelSelector:
+            matchExpressions:
+            - key: "app.kubernetes.io/name"
+              operator: In
+              values:
+              - "vmalert"
+          topologyKey: "kubernetes.io/hostname"

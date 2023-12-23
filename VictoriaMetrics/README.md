@@ -1,12 +1,13 @@
 ## 规范
 
 - 全局抓取间隔是超时时间的 三倍, ( VM-Agent 配置 )
+
 ```sh
 # VM-Agent
-  scrapeTimeout: "15s"
-  scrapeInterval: "45s"
+  scrapeTimeout: "20s"
+  scrapeInterval: "60s"
 ```
-- HTTP 和 TCP 探测超时均为 8s, ICMP 为 2s
+- HTTP 和 TCP 探测超时统一为 8s, ICMP 为 2s
 
 ```sh
 ...
@@ -20,7 +21,25 @@
         prober: icmp
         timeout: 2s
 ```
+- PodScrape 抓取间隔统一 45s 超时 15s
 
+```sh
+  podMetricsEndpoints:
+    - port: web
+      path: /-/metrics
+      scheme: http
+      interval: 15s
+```
+- ProbeScrape 抓取间隔统一 30s 超时 10s
+
+- Ingress 统一域名访问路径
+
+|       Path       |      Explain      |
+| :--------------: | :---------------: |
+|       `/`        | 查看 agent target |
+| `/select/0/vmui` |    查询 metric    |
+|    `/alerts`     | 管理 alertmanager |
+|    `/vmalert`    |   查看告警规则    |
 
 ## 安装 CRD
 

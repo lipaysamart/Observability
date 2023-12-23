@@ -1,0 +1,24 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMPodScrape
+metadata:
+  name: gitlab-pod-scrape
+  namespace: vm-operator
+spec:
+  namespaceSelector:
+    any: true
+  jobLabel: gitlab
+  podMetricsEndpoints:
+    - port: gitlab-export
+      path: "/metrics"
+      scheme: http
+    - port: postgres-export
+      path: "/metrics"
+      scheme: http
+    - port: redis-export
+      path: "/metrics"
+      scheme: http
+      scrape_interval: 45s
+      scrapeTimeout: 15s
+  selector:
+    matchLabels:
+      k8s-app: gitlab

@@ -5,8 +5,8 @@ metadata:
   namespace: vm-operator
 spec:
   jobName: ingress-probe
-  scrapeTimeout: 8s
-  scrape_interval: 32s
+  scrapeTimeout: 10s
+  scrape_interval: 30s
   vmProberSpec:
     # by default scheme http, and path is /probe
     url: prometheus-blackbox-exporter.vm-operator.svc:9115
@@ -15,8 +15,9 @@ spec:
   module: http_2xx
   targets:
     ingress: 
+      namespaceSelector:
+        any: true
       selector:
         matchExpressions:
         - key: app
           operator: Exists
-  interval: 5s

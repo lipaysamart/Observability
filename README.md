@@ -23,7 +23,7 @@
 
 ### scrapeTimeout & scrapeInterval
 
->约定每种指标抓取的时间间隔，方便对齐
+>约定指标抓取的时间间隔，方便对齐
 
 |Flags|Explain|
 |:---:|:---:|

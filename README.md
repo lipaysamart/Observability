@@ -1,172 +1,109 @@
-## Observability
+# Observability
 
 >Build Your Kubernetes Monitoring System
 
-![Prometheus](https://img.shields.io/badge/Prometheus-%23E6522C?logo=prometheus&logoColor=white) ![Grafana](https://img.shields.io/badge/Grafana-%23F46800?logo=grafana&logoColor=white) ![Alertmanager](https://img.shields.io/badge/Alertmanager-%23EB1510?logo=alertmanager&logoColor=white) ![Prometheusalert](https://img.shields.io/badge/Notification_Center-Prometheusalert-%23FF9E0F?logoColor=white)
+ ![VictoriaMetrics](https://img.shields.io/badge/VictoriaMetrics-%23000000?logo=victoriametrics&logoColor=wilte)
 
+## 目录结构
 
-### K8S版本兼容
-
-___
-| kube-prometheus stack                                                                      | Kubernetes 1.21 | Kubernetes 1.22 | Kubernetes 1.23 | Kubernetes 1.24 | Kubernetes 1.25 |
-| ------------------------------------------------------------------------------------------ | --------------- | --------------- | --------------- | --------------- | --------------- |
-| [`release-0.9`](https://github.com/prometheus-operator/kube-prometheus/tree/release-0.9)   | ✔               | ✔               | ✗               | ✗               | ✗               |
-| [`release-0.10`](https://github.com/prometheus-operator/kube-prometheus/tree/release-0.10) | ✗               | ✔               | ✔               | ✗               | ✗               |
-| [`release-0.11`](https://github.com/prometheus-operator/kube-prometheus/tree/release-0.11) | ✗               | ✗               | ✔               | ✔               | ✗               |
-| [`release-0.12`](https://github.com/prometheus-operator/kube-prometheus/tree/release-0.12) | ✗               | ✗               | ✗               | ✔               | ✔               |
-
-### 目录结构
-
-___
 ```
-├─Alertmanager    # 告警平台
-├─ExternalRules   # 扩展的告警规则
-├─Grafana   # 数据展示
-├─PrometheusAlert   # 告警通知，格式化模板
-│  └─wx-tpl   # 告警模板简单示例
-├─Release-0.12    # Kube-Prometheus-Operator 项目版本
-│  └─manifests
-│      └─setup
-└─ScrapMonitor     # 监控抓取配置
-    └─exporter    # Export 配置  
+├─Grafana  # 数据展示
+├─PrometheusAlert
+│  └─wx-tpl # # 告警模板简单示例
+└─VictoriaMetrics
+    ├─Ci  
+    ├─Components
+    ├─Exporter  # 导出器的集合
+    └─Internal
+        ├─Scrape  # 监控抓取配置
+        └─VMAlertmanagerConf # 告警路由配置
 ```  
 
-### 项目配置
+## 项目规范
 
-___
->与原生的 **Kube-Prometheus** 不同。在原生项目的基础上增加了一些配置，和完善避免部署原生时踩过的一些坑。其中一些默认值需要进行修改，例如 `storageClass`, `ingress` 等资源。
->>每个文件内都有清晰的注解说明，请仔细查看。
+### scrapeTimeout & scrapeInterval
 
-|          Explain          |                     Path                      |
-| :-----------------------: | :-------------------------------------------: |
-|      Prometheus 配置      |     manifests/prometheus-prometheus.yaml      |
-|       Blackbox 配置       | manifests/blackboxExporter-configuration.yaml |
-|       自动发现配置        |     manifests/prometheus-additional.yaml      |
-|         RBAC 配置          |     manifests/prometheus-clusterRole.yaml     |
-| Alertmanager 告警路由配置 |     Alertmanager/alertmanager-secret.yaml     |
-|       Grafana 配置        |          Grafana/grafana-config.yaml          |
-|   Prometheusalert 配置    |  Prometheusalert/prometheusAlert-config.yaml  |
+>约定每种指标抓取的时间间隔，方便对齐
 
-### 项目部署
-
-____
->
-
-```
-$ kubectl create -f manifests/setup
-$ kubectl create -f Grafana/ -f PrometheusAlert/ -f Alertmanager/
-$ kubectl create -f manifests/
-```
-
-### TIPS
-
-___
-
-#### 配置多个 **AlertmanagerConfig**
-
-如果你有多个告警接收人和路由配置时，不想挤压在一个文件内，可以使用这个Kind资源 `AlertmanagerConfig`, 帮助我们创建管理告警配置。
-
-#### 配置外部 **Alertmanager**
-
-如果你有多套集群发送到一个 **Alertmanager** 时需要添加以下参数 (文件默认在 manifests 下 `alert-center-external-secert.yaml`):
-```yaml
-kubectl apply -f - <<-EOF
-apiVersion: v1
-kind: Secret
-metadata:
-  name: alert-center-external
-  namespace: monitoring
-stringData:
-  alert-config: |-
-    - path_prefix: /
-      scheme: https
-      timeout: 10s
-      api_version: v1
-      static_configs:
-        - targets: ['alertmanager.k8s.local']
-EOF
-```
-```yaml
-apiVersion: monitoring.coreos.com/v1
-kind: Prometheus
-metadata:
-  name: k8s
-  namespace: monitoring
-spec:
-  # 添加这部分内容
-  additionalAlertManagerConfigs:
-    key: alert-config
-    name: alert-center-external
-```
-
-#### 配置自定义监控
-
->在 `Pormetheus-Operator` 中给我们提供了 `ServiceMonitor` 对象,我们可以通过 `ServiceMonitor` 来关联 `Metrics` 数据接口的 `Service` 对象。
->>常见的监控对象在 `PROMETHEUS/scrape`
-
-#### 配置自动发现
-
->通过添加注解 `prometheus.io/scrape=true`来进行 `service/pod` 发现并进行自动监控,此前我们已经在Prometheus中进行配置 `Prometheus.spec.additionalScrapeConfigs`。
-
-#### 配置告警规则
-
->想要自定义一个报警规则，只需要创建一个能够被 `prometheus` 对象匹配的 `PrometheusRule` 对象即可。
->>扩展的告警规则在 `ExternalRules/`。
-
-#### 监控 **kube_proxy** 组件
-
-```
-# kube-proxy默认监听的地址是127.0.0.1:10249，如果你是1.26的版本则默认不开启。
-# 修改监听的端口，按如下方法:
-k edit cm kube-proxy -nkube-system
-# 将metricsBindAddress这段修改成metricsBindAddress: 0.0.0.0:10249
-# 重启kube-proxy:
-k get pods -nkube-system | grep kube-proxy | awk '{print $1}' | xargs kubectl delete pods -n kube-system
-```
-
-#### 监控 **etcd** 组件
-
-```
-# 在 master上修改 /etc/kubernetes/manifests/etcd.yaml 文件
-# 将 command 中修改 --listen-metrics-urls=http://127.0.0.1:2381
---listen-metrics-urls=http://0.0.0.0:2381
-```
-
-#### 监控 **kube_scheduler** 组件和 **kube_controller_manager** 组件
-
-```
-# 在 master 路径下 /etc/kubernetes/manifests 找到这两个文件
-# 将 command 中修改 --bind-address=127.0.0.1
---bind-address=0.0.0.0
-```
-
-#### 清理 **Prometheus-Operator**
-
-```
-k delete -f manifests/
-k delete -f manifests/setup
-```
-
-### TroubleShooting
-
-___
-
-#### 多副本采集数据不一致
-
->多副本的情况下正常来说请求是会去轮询访问后端的两个 `Prometheus` 实例, 这样可能就会导致每次请求到的 `Prometheus` 数据都不一样，解决这个问题的方法则可以在创建 `Service` 的时候添加 `sessionAffinity: ClientIP` 这样的属性，然后会根据 `ClientIP` 来做 `session` 亲和性。所以不用担心请求会到不同的副本上去
+|Flags|Explain|
+|:---:|:---:|
+|`Blackbox`|HTTP 和 TCP 探测超时统一为 `8s`, ICMP 为 `2s`|
+|`Global`|全局默认抓取间隔 `60s`, 超时 `20s`|
+|`PodScrape`|默认抓取间隔 `45s` 超时 `15s`|
+|`ProbeScrape`|默认抓取间隔 `30s`, 超时 `10s`|
 
 
-#### 无法通过 **statefulSet** 对象来删除 **Prometheus** 或 **Alertmanager**
+### Ingress 统一域名访问路径
 
->这是因为它们由 **Operator** 控制
+>通过单个域名实现路由管理
+
+|       Path       |      Explain      |
+| :--------------: | :---------------: |
+|       `/`        | 管理 AgentTarget |
+| `/select/0/vmui` |    查询 Metric    |
+|    `/alerts`     | 管理 Alertmanager |
+|    `/vmalert`    |   查看 AlertRule    |
+
+## 项目部署
+
+### 安装 CRD
 
 ```sh
-# 查看Prometheus对象下定义的资源
-k get prometheus -nmonitoring
+helm upgrade --install vm-operator vm/victoria-metrics-operator --version 0.27.9 -f values.yaml -n vm-operator --create-namespace
+```
 
-NAME   VERSION   DESIRED   READY   RECONCILED   AVAILABLE   AGE
-k8s    2.46.0    2         2       True         True        3h54m
+### 安装 VM-Cluster
 
-# 删除Prometheus对象
-k delete prometheus k8s -nmonitoring 
+```sh
+k apply -f Ci/vm-cluster.yaml
+```
+
+### 安装 VM-Agent
+
+```sh
+k apply -f Components/vm-agent.yaml
+```
+
+### 安装 VM-Alert
+
+```sh
+k apply -f Components/vm-alert.yaml
+```
+
+### 安装 VM-ALertmanager
+
+```sh
+k apply -f Components/vm-alertmanager.yaml
+```
+
+### 安装 Blackbox-Exporter
+
+```sh
+k apply -f Exporter/web-exporter.yaml
+```
+
+## Scrap 配置
+
+### Cadvisor Scrape
+
+>VMNodeScrape CRD 提供了抓取 kubernetes 节点指标的发现机制，对于 node_export 监控非常有用
+```sh
+k apply -f ScrapMonitor/vm-node-scrape.yaml
+```
+
+### Probe Scrape
+
+>必须先配置 Blackbox-export 提供探测能力，CRD 提供 静态抓取和服务发现。
+```sh
+k apply -f Components/web-export.yaml
+k apply -f ScrapMonitor/vm-probe-scrape.yaml
+```
+
+## TroubleShooting
+
+- Agent 报错 403
+
+>这是一个 RBAC 权限问题, 需要添加抓取对象的权限。 
+```sh
+unexpected status code returned when scraping \"https://kubernetes.default.svc:443/api/v1/nodes/worker-2/proxy/metrics/cadvisor\": 403; expecting 200
 ```

@@ -5,13 +5,52 @@ metadata:
   namespace: vm-operator
 spec:
   username: admin
-  password: admin
+  password: 8U552asqZt4G
   targetRefs:
     - crd:
-        kind: VMAlertmanager
-        name: vmalertmanager
+        kind: VMAgent
+        name: vmagent
         namespace: vm-operator
-      paths: ["/.*"]
+      paths: 
+        - "/targets"
+        - "/targets/.*"
+        - "/metrics"
+        - "/api/v1/targets"
+        - "/config"
+        - "/static/.*"
+        - "/metric-relabel-debug"
+        - "/-/reload"
     - static:
-        url: http://vmalert-vmalert.vm-operator.svc:8080
-      paths: ["/api/v1/groups","/api/v1/alerts"]
+        urls:
+          - http://vmalertmanager-vmalertmanager-0.vmalertmanager-vmalertmanager.vm-operator.svc.cluster.local:9093
+          - http://vmalertmanager-vmalertmanager-1.vmalertmanager-vmalertmanager.vm-operator.svc.cluster.local:9093
+      paths: ["/alerts/.*"]
+    - crd:
+        kind: VMAlert
+        name: vmalert
+        namespace: vm-operator
+      paths:
+        - "/vmalert"
+        - "/vmalert/.*"
+        - "/api/v1/.*"
+    - static:
+        urls: 
+          - http://vmselect-vmcluster-0.vmselect-vmcluster.vm-operator.svc.cluster.local:8481
+          - http://vmselect-vmcluster-1.vmselect-vmcluster.vm-operator.svc.cluster.local:8481
+      # target_path_suffix: "/select"
+      paths:
+        - "/select/0/vmui/.*"
+        - "/select/0/prometheus/api/.*"
+        - "/select/1/vmui/.*"
+        - "/select/1/prometheus/api/.*"
+        - "/select/2/vmui/.*"
+        - "/select/2/prometheus/api/.*"
+        - "/admin/tenants"
+        - "/api/v1/.*"
+    - static:
+        urls: 
+          - http://vminsert-vmcluster.vm-operator.svc.cluster.local:8480
+      # target_path_suffix: "/select"
+      paths:
+        - "/insert/2/.*"
+        - "/api/v1/.*"

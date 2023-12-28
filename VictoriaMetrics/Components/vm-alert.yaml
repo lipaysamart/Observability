@@ -7,26 +7,26 @@
     replicaCount: 2
     evaluationInterval: "30s"
     remoteWrite:
-      url: http://vmselect-vmcluster.vm-operator.svc:8481/select/0/prometheus
+      url: http://vminsert-vmcluster.vm-operator.svc:8480/insert/1/prometheus
     remoteRead:
-      url: http://vmselect-vmcluster.vm-operator.svc:8481/select/0/prometheus
+      url: http://vmselect-vmcluster.vm-operator.svc:8481/select/1/prometheus
     datasource:
-      url: http://vmselect-vmcluster.vm-operator.svc:8481/select/0/prometheus
+      url: http://vmselect-vmcluster.vm-operator.svc:8481/select/1/prometheus
     notifiers:
-      - url: http://vmalertmanager.vm-operator.svc:9093
+      - url: http://vmalertmanager-vmalertmanager.vm-operator.svc:9093
     ruleSelector: {}
     externalLabels:
-      tenant: "0"
+      tenant: "1"
     ruleNamespaceSelector: 
       matchLabels:
         kubernetes.io/metadata.name: vm-operator
-    serviceSpec:
-      metadata:
-        name: vmalert-access
-        labels:
-          app.kubernetes.io/name: vmalert
-      spec:
-        type: ClusterIP
+    # serviceSpec:
+    #   metadata:
+    #     name: vmalert-access
+    #     labels:
+    #       app.kubernetes.io/name: vmalert
+    #   spec:
+    #     type: ClusterIP
         # type: NodePort
     affinity:
       podAntiAffinity:

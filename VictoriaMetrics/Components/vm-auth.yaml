@@ -1,0 +1,32 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMAuth
+metadata:
+  name: router-main
+  namespace: vm-operator
+spec:
+  podMetadata:
+    labels:
+      component: vmauth
+  userSelector: {}
+  userNamespaceSelector:
+    matchLabels:
+      kubernetes.io/metadata.name: vm-operator
+  # unauthorizedAccessConfig:
+  #   - src_paths: ["/-/reload", "/metric-relabel-debug"]
+  #     url_prefix:
+  #       - http://vmagent-vmagent.vm-operator.svc:8429
+  replicaCount: 2
+  resources:
+    requests:
+      cpu: "250m"
+      memory: "350Mi"
+    limits:
+      cpu: "500m"
+      memory: "850Mi"
+  ingress:
+    # annotations:
+    #   cert-manager.io/cluster-issuer: base
+    class_name: nginx
+    tlsHosts:
+      - victoria.k8s.local
+    tlsSecretName: sre-ca

@@ -1,0 +1,23 @@
+version: "3.5"
+services:
+  vmagent:
+    container_name: vmagent
+    image: victoriametrics/vmagent:v1.96.0
+    ports:
+      - 8429:8429
+    volumes:
+      # - vmagentdata:/vmagentdata
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - "--promscrape.config=/etc/prometheus/prometheus.yml"
+      - "--remoteWrite.url=https://victoria.k8s.local/insert/2/prometheus/api/v1/write"
+      - "--remoteWrite.tlsInsecureSkipVerify=true"
+      - "--remoteWrite.basicAuth.password=8U552asqZt4G"
+      - "--remoteWrite.basicAuth.username=admin"
+    extra_hosts:
+      victoria.k8s.local: "172.16.10.254"
+    networks:
+      - vm_net
+    restart: always
+networks:
+  vm_net:

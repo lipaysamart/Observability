@@ -70,12 +70,13 @@ spec:
   scrapeInterval: "60s"
   logFormat: "json"
   logLevel: "INFO"
-  vmAgentExternalLabelName: vmagent
+  externalLabels: 
+    tenant: "1"
   extraArgs:
+    # 缓存可以占用系统内存百分比
     memory.allowedPercent: "40"
   remoteWrite:
-    # handless 地址
-    - url: "http://vminsert-vmcluster.vm-operator.svc:8480/insert/0/prometheus/api/v1/write"
+    - url: "http://vminsert-vmcluster.vm-operator.svc:8480/insert/1/prometheus/api/v1/write"
     # - url: "http://vmsingle-example.default.svc:8429/api/v1/write"
   serviceScrapeNamespaceSelector: {}
   podScrapeNamespaceSelector: {}
@@ -87,11 +88,11 @@ spec:
   staticScrapeNamespaceSelector: {}
   probeSelector: {}
   probeNamespaceSelector: {}
-  serviceSpec:
-    metadata:
-      name: vmagent-access
-      labels:
-        app.kubernetes.io/name: vmagent
-    spec:
-        type: ClusterIP
+  # serviceSpec:
+  #   metadata:
+  #     name: vmagent-access
+  #     labels:
+  #       app.kubernetes.io/name: vmagent
+  #   spec:
+  #       type: ClusterIP
         # type: NodePort

@@ -1,0 +1,16 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMNodeScrape
+metadata:
+  name: nodes-metrics
+  namespace: vm-operator
+spec:
+  scheme: "https"
+  scrape_interval: 60s
+  scrapeTimeout: 20s
+  path: "/metrics"
+  port: "9100"
+  jobLabel: nodes-metrics
+  tlsConfig:
+    insecureSkipVerify: true
+    caFile: "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
+  bearerTokenFile: "/var/run/secrets/kubernetes.io/serviceaccount/token"

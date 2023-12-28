@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus-blackbox-exporter
+  namespace: vm-operator
+  labels:
+    app: prometheus-blackbox-exporter
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: prometheus-blackbox-exporter
+  template:
+    metadata:
+      labels:
+        app: prometheus-blackbox-exporter
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - prometheus-blackbox-exporter
+              topologyKey: kubernetes.io/hostname
+      containers:
+        - name: blackbox-exporter
+          image: "prom/blackbox-exporter:v0.24.0"
+          args:
+            - "--config.file=/config/blackbox.yaml"
+          resources:
+            requests:
+              memory: 100Mi
+              cpu: "0.1"
+            limits:
+              memory: 200Mi
+              cpu: "0.25"
+          ports:
+            - containerPort: 9115
+              name: http
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+          volumeMounts:
+            - mountPath: /config
+              name: config
+      volumes:
+        - name: config
+          configMap:
+            name: prometheus-blackbox-exporter

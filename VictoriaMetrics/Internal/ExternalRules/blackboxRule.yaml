@@ -1,16 +1,10 @@
-piVersion: monitoring.coreos.com/v1
-kind: PrometheusRule
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMRule
 metadata:
   labels:
-    app.kubernetes.io/component: prometheus
-    app.kubernetes.io/instance: k8s
-    app.kubernetes.io/name: prometheus
-    app.kubernetes.io/part-of: kube-prometheus
-    app.kubernetes.io/version: 2.32.1
-    prometheus: k8s
     role: alert-rules
   name: blackbox-rules
-  namespace: monitoring
+  namespace: vm-operator
 spec:
   groups:
     - name: BlackboxExporter

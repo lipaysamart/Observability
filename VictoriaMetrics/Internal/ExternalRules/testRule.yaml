@@ -1,0 +1,19 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMRule
+metadata:
+  name: vmrule-alerting-example
+  namespace: vm-operator
+spec:
+  groups:
+    - name: vmalert
+      interval: 2m
+      rules:
+        - alert: vmalert config reload error
+          expr: sum(vmagent_http_requests_total{}[5m]) by (tenant) > 0
+          for: 10s
+          labels:
+            severity: info
+            job:  "{{ $labels.tenant }}"
+          annotations:
+            value: "{{ $value }}"
+            description: 'error reloading vmagent config, reload count for 5 min {{ $value }}'

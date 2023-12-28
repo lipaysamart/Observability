@@ -1,12 +1,11 @@
-apiVersion: monitoring.coreos.com/v1
-kind: PrometheusRule
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMRule
 metadata:
   generation: 1
   labels:
-    prometheus: k8s
     role: alert-rules
-  name: prometheus-event-rules
-  namespace: monitoring
+  name: kubernetes-event-rules
+  namespace: vm-operator
 spec:
   groups:
   - name: aliyun-prom-event

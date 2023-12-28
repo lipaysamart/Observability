@@ -20,13 +20,13 @@ spec:
     #         storage: 2Gi
     #     storageClassName: nfs-csi-stateful
     emptyDir: {}
-  serviceSpec: 
-    metadata:
-      name: vmalertmanager-access
-      labels:
-        app.kubernetes.io/name: vmalertmanager
-    spec:
-        type: ClusterIP
+  # serviceSpec: 
+  #   metadata:
+  #     name: vmalertmanager-access
+  #     labels:
+  #       app.kubernetes.io/name: vmalertmanager
+  #   spec:
+  #       type: ClusterIP
         # type: NodePort
   routePrefix: "/alerts"
   # routePrefix: "/"
@@ -40,7 +40,6 @@ spec:
       cpu: "0.25"
   # image: victoriametrics/vmagent:v1.95.1
   externalURL: "https://victoria.k8s.local/alerts"
-  # externalURL: "https://vmalertmanager.k8s.local/"
   affinity:
     podAntiAffinity:
       preferredDuringSchedulingIgnoredDuringExecution:

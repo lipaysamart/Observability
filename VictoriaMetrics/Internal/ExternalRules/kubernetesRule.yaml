@@ -1,13 +1,10 @@
-apiVersion: monitoring.coreos.com/v1
-kind: PrometheusRule
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMRule
 metadata:
   labels:
-    app.kubernetes.io/name: kube-prometheus
-    app.kubernetes.io/part-of: kube-prometheus
-    prometheus: k8s
     role: alert-rules
-  name: kubernetes-monitoring-rules
-  namespace: monitoring
+  name: kubernetes-rules
+  namespace: vm-operator
 spec:
   groups:
   - name: kubernetes-apps

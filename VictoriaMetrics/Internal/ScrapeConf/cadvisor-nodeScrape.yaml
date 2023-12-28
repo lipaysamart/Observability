@@ -5,8 +5,8 @@ metadata:
   namespace: vm-operator
 spec:
   scheme: "https"
-  scrape_interval: 30s
-  scrapeTimeout: 30s
+  scrape_interval: 45s
+  scrapeTimeout: 15s
   tlsConfig:
     insecureSkipVerify: true
     caFile: "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"

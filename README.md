@@ -7,16 +7,21 @@
 ## 目录结构
 
 ```
-├─Grafana  # 数据展示
-├─PrometheusAlert
-│  └─wx-tpl # # 告警模板简单示例
+├─Docker  # 模拟多租户写入 VMCluster
+├─Grafana # 数据展示
+├─PrometheusAlert #
+│  └─wx-tpl
 └─VictoriaMetrics
-    ├─Ci  
-    ├─Components
-    ├─Exporter  # 导出器的集合
+    ├─Ci
+    ├─Components  # VM-Operator 组件
     └─Internal
-        ├─Scrape  # 监控抓取配置
-        └─VMAlertmanagerConf # 告警路由配置
+        ├─BlackboxExporter  # 探针导出器
+        ├─ExternalRules
+        ├─KubeStateMetrics
+        ├─NodeExporter  # 节点导出器
+        ├─ScrapeConf  # 监控抓取配置
+        │  └─otherExamples  # 其它示例抓取配置
+        └─VMAlertmanagerConf  # 告警路由配置
 ```  
 
 ## 项目规范

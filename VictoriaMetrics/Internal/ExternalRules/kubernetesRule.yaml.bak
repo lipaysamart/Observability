@@ -13,9 +13,9 @@ spec:
       annotations:
         description: pod/{{ $labels.pod }} in namespace {{ $labels.namespace }} on
           container {{ $labels.container}} has been in waiting state for longer than
-          1 hour.
+          15 min with reason {{ $labels.reason }}.
         runbook_url: https://runbooks.prometheus-operator.dev/runbooks/kubernetes/kubecontainerwaiting
-        summary: Pod container waiting longer than 1 hour
+        summary: Pod container waiting longer than 15 min
       expr: |
         sum by (namespace, pod, container, cluster, reason) (kube_pod_container_status_waiting_reason{job="kube-state-metrics"}) > 0
       for: 15m

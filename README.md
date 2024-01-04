@@ -37,7 +37,7 @@
 |    `PodScrape`     |         默认抓取间隔 `45s` 超时 `15s`         |
 |   `ProbeScrape`    |        默认抓取间隔 `30s`, 超时 `10s`         |
 | `VM-ServiceScrape` |        默认抓取间隔 `30s`, 超时 `10s`         |
-|     `VM-Rule`      |              默认抓取间隔 `120s`              |
+|     `VM-Rule`      |              默认规则评估间隔 `120s`              |
 
 ### VM-Rule & VM-Alert
 

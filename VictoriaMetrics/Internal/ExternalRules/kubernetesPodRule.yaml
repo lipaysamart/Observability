@@ -7,7 +7,7 @@ metadata:
   namespace: vm-operator
 spec:
   groups:
-  - name: aliyun-prom-pod
+  - name: k8s-prom-pod
     rules:
     - alert: PodCpu85
       annotations:

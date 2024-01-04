@@ -5,7 +5,7 @@
     namespace: vm-operator
   spec:
     replicaCount: 2
-    evaluationInterval: "30s"
+    evaluationInterval: "2m"
     remoteWrite:
       url: http://vminsert-vmcluster.vm-operator.svc:8480/insert/1/prometheus
     remoteRead:

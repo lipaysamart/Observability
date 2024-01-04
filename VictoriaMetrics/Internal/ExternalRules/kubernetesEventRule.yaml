@@ -8,22 +8,22 @@ metadata:
   namespace: vm-operator
 spec:
   groups:
-  - name: aliyun-prom-event
+  - name: k8s-prom-event
     rules:
     - alert: EventOOMKilled
       annotations:
         eventurl: https://arms.console.aliyun.com/#/tracing/event/cn-hangzhou
-        message: OOMKilled events occurred in {{ $labels.namespace }}.{{ $labels.pod_name
+        description: OOMKilled events occurred in {{ $labels.namespace }}.{{ $labels.pod_name
           }}.
       expr: |
-        sum( rate(aliyun_k8s_event{reason="OOMKilled"}[1m])*60) by (namespace,pod_name) >0
+        sum(rate(aliyun_k8s_event{reason="OOMKilled"}[1m])*60) by (namespace,pod_name) >0
       for: 5m
       labels:
         severity: critical
     - alert: EventScaling
       annotations:
         eventurl: https://arms.console.aliyun.com/#/tracing/event/cn-hangzhou
-        message: EventScaling events occurred in {{ $labels.namespace }}.{{ $labels.pod_name
+        description: EventScaling events occurred in {{ $labels.namespace }}.{{ $labels.pod_name
           }}.
       expr: |
         sum( rate(aliyun_k8s_event{reason="ScalingReplicaSet"}[1m])*60) by (namespace,pod_name) >0

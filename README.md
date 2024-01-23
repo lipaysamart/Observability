@@ -2,7 +2,7 @@
 
 >Build Your Kubernetes Monitoring System
 
- ![VictoriaMetrics](https://img.shields.io/badge/VictoriaMetrics-%23000000?logo=victoriametrics&logoColor=wilte)
+![VictoriaMetrics](https://img.shields.io/badge/VictoriaMetrics-%23000000?logo=victoriametrics&logoColor=wilte)
 
 ## 目录结构
 

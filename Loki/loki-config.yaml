@@ -106,10 +106,6 @@ data:
       join_members:
       - loki-memberlist
 
-    querier:
-      max_concurrent: 64
-      multi_tenant_queries_enabled: true
-
     query_range:
       align_queries_with_step: true
       cache_results: true
@@ -124,17 +120,10 @@ data:
       alertmanager_url: http://alertmanager-main.monitoring.svc:9093
       external_url: http://alertmanager.k8s.local
       storage:
-        s3:
-          endpoint: minio-service:9000
-          insecure: true
-          bucketnames: ruler
-          access_key_id: minio
-          secret_access_key: minio123
-          s3forcepathstyle: true
-          http_config:
-            idle_conn_timeout: 90s
-            response_header_timeout: 0s
-            insecure_skip_verify: true
+        type: local
+        local:
+          directory: /var/loki/rules
+      rule_path: /tmp/rules
       evaluation_interval: 3m
       enable_alertmanager_v2: true
       notification_timeout: 30s

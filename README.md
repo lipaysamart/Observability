@@ -56,6 +56,34 @@ k delete -f Minio/ -f Redis/
 k delete -f Grafana/
 ```
 
+#### 配置 ruler 组件
+
+>将 `rule` 规则挂载进 Loki `/var/loki/rules` 目录下
+>>- 单租户 `rules/fake/xxx.yaml`
+>>- 多租户 `rules/<tenant_id>/xxx.yaml`
+
+```yaml
+    ...
+          volumeMounts:
+            - name: example-rule
+              mountPath: /etc/loki/rules/fake  # 挂载到/etc/loki/rules/下fake目录中，
+        ...
+      volumes:
+        - name: example-rule                 # 添加告警规则 configmap
+          configMap:
+            defaultMode: 0640
+            name: fake-rule
+```
+
+> 查看 loki 日志，日志关键字 
+
+```
+$ k -nmonitoring logs -f loki-read-0 | grep rule
+{"caller":"mapper.go:47","level":"info","msg":"cleaning up mapped rules directory","path":"/tmp/rules","ts":"2024-01-22T07:10:51.773495269Z"}
+{"caller":"module_service.go:82","level":"info","module":"ruler","msg":"initialising","ts":"2024-01-22T07:10:53.055784043Z"}
+{"caller":"ruler.go:499","level":"info","msg":"ruler up and running","ts":"2024-01-22T07:10:53.055831252Z"}
+```
+
 ### TroubleShooting
 
 ___

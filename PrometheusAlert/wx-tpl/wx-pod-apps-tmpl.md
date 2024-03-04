@@ -17,6 +17,7 @@
 ##### 🌟<font color="#02b340">【Cluster】</font>{{$v.labels.cluster}}
 ##### 🌟<font color="#02b340">【Namespace】</font>{{$v.labels.namespace}}
 ##### 🌟<font color="#02b340">【Pod】</font>{{$v.labels.pod}}
+##### 🌟<font color="#02b340">【Reason】</font>{{$v.labels.reason}}
 
 **<font color="#02b340">{{$v.annotations.description}}</font>**
 
@@ -39,6 +40,7 @@
 ##### 🌟<font color="#FF0000">【Cluster】</font>{{$v.labels.cluster}}
 ##### 🌟<font color="#FF0000">【Namespace】</font>{{$v.labels.namespace}}
 ##### 🌟<font color="#FF0000">【Pod】</font>{{$v.labels.pod}}
+##### 🌟<font color="#FF0000">【Reason】</font>{{$v.labels.reason}}
 
 **<font color="#E6A23C">{{$v.annotations.description}}</font>**
 

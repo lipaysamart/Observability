@@ -37,7 +37,7 @@
 |    `PodScrape`     |         默认抓取间隔 `45s` 超时 `15s`         |
 |   `ProbeScrape`    |        默认抓取间隔 `30s`, 超时 `10s`         |
 | `VM-ServiceScrape` |        默认抓取间隔 `30s`, 超时 `10s`         |
-|     `VM-Rule`      |              默认规则评估间隔 `120s`              |
+|     `VM-Rule`      |            默认规则评估间隔 `120s`            |
 
 ### VM-Rule & VM-Alert
 
@@ -203,3 +203,13 @@ global:
 ```sh
 unexpected status code returned when scraping \"https://kubernetes.default.svc:443/api/v1/nodes/worker-2/proxy/metrics/cadvisor\": 403; expecting 200
 ```
+
+- rollup result cache resets
+
+>这是一个在远程写入时的报错，对应告警会有 `PrometheusRemoteWriteDesiredShards` or `PrometheusRemoteStorageFailures` --相关 (issue 4070)
+
+解决方法: 添加 `-search.disableAutoCacheReset` 标志
+
+## Reference
+
+- [issue 4070](https://github.com/VictoriaMetrics/VictoriaMetrics/issues/4070)
